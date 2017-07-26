@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: test1@test.fi
+  ip: 0.0.0.0
+
+two:
+  email: test2@test.fi
+  ip: 0.0.0.1

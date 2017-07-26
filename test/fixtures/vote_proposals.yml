@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  topic: MyString
+  min_options: 1
+  max_options: 1
+  published_at: 2017-07-26 07:46:18
+  viewable_at: 2017-07-26 07:46:18
+
+two:
+  topic: MyString
+  min_options: 1
+  max_options: 1
+  published_at: 2017-07-26 07:46:18
+  viewable_at: 2017-07-26 07:46:18
