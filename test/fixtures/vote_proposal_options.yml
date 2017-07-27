@@ -1,7 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: no
 
 two:
-  name: MyString
+  name: yes
+
+three:
+  name: canada
+
+  

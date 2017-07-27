@@ -3,9 +3,9 @@
 one:
   user: one
   vote_proposal: one
-  selected_options: MyString
+  vote_proposal_options: one
 
 two:
-  user: two
+  user: one
   vote_proposal: two
-  selected_options: MyString
+  vote_proposal_options: one

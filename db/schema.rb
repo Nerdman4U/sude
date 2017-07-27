@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726081338) do
+ActiveRecord::Schema.define(version: 20170727082950) do
 
   create_table "group_permissions", force: :cascade do |t|
     t.integer "group_id"
@@ -35,13 +35,12 @@ ActiveRecord::Schema.define(version: 20170726081338) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
   create_table "user_vote_proposals", force: :cascade do |t|
     t.integer "user_id"
     t.integer "vote_proposal_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_vote_proposals_on_user_id"
     t.index ["vote_proposal_id"], name: "index_user_vote_proposals_on_vote_proposal_id"
   end
@@ -59,6 +58,7 @@ ActiveRecord::Schema.define(version: 20170726081338) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_vote_proposal_options_on_name", unique: true
   end
 
   create_table "vote_proposal_tags", force: :cascade do |t|
@@ -71,8 +71,6 @@ ActiveRecord::Schema.define(version: 20170726081338) do
   create_table "vote_proposal_vote_proposal_options", force: :cascade do |t|
     t.integer "vote_proposal_id"
     t.integer "vote_proposal_option_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["vote_proposal_id"], name: "vopovopoop_vopo_id"
     t.index ["vote_proposal_option_id"], name: "vopovopoop_vopoop_id"
   end
@@ -99,8 +97,6 @@ ActiveRecord::Schema.define(version: 20170726081338) do
   create_table "vote_vote_proposal_options", force: :cascade do |t|
     t.integer "vote_id"
     t.integer "vote_proposal_option_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["vote_id"], name: "index_vote_vote_proposal_options_on_vote_id"
     t.index ["vote_proposal_option_id"], name: "index_vote_vote_proposal_options_on_vote_proposal_option_id"
   end

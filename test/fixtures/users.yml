@@ -3,7 +3,10 @@
 one:
   email: test1@test.fi
   ip: 0.0.0.0
+  vote_proposals: one
 
 two:
   email: test2@test.fi
   ip: 0.0.0.1
+  vote_proposals: one
+  

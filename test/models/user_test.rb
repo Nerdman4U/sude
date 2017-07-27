@@ -12,11 +12,11 @@ class UserTest < ActiveSupport::TestCase
   test 'should have default status active' do
     assert_equal users('one').status, "active"
   end
-  test 'should return a fixed user with one Vote' do
-    assert_equal users('one').votes.count, 1
+  test 'should return a fixed user with one vote' do
+    assert users('one').votes.count > 0
   end
-  test 'should return a fixed user with one VoteProposal' do
-    assert_equal users('one').vote_proposals.count, 1
+  test 'should return a fixed user with one vote proposal' do
+    assert users('one').vote_proposals.count > 0
   end
   
 end
