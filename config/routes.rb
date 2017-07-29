@@ -4,5 +4,7 @@ Rails.application.routes.draw do
     get '/', to: "votes#index"
     get '/instruction', to: "democracy#instruction"
     devise_for :users
+    devise_for :admin_users, ActiveAdmin::Devise.config
+    ActiveAdmin.routes(self)
   end
 end

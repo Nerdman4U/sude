@@ -1,0 +1,11 @@
+fi:
+  activerecord:
+    models:
+      user: Käyttäjä
+    attributes:
+      email: Sähköposti
+      created_at: Lisätty
+      updated_at: Päivitetty
+      encrypted_password: Kryptattu salasana
+      username: Käyttäjätunnus
+      fullname: Nimi

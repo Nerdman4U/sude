@@ -7,7 +7,7 @@ end
 
 gem 'route_translator'
 gem 'devise'
-#gem 'activeadmin'
+gem 'activeadmin'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.0.rc1'
