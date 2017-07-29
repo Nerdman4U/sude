@@ -1,4 +1,7 @@
 fi:
-  instruction: ohje
+  instruction: Ohje
+  sign_in: Kirjaudu sisään
+  sign_out: Kirjaudu ulos
+  direct_democracy: Suora demokratia
   routes:
     instruction: ohje

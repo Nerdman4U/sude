@@ -6,7 +6,7 @@ one:
   max_options: 1
   published_at: 2017-07-26 07:46:18
   viewable_at: 2017-07-26 07:46:18
-  vote_proposal_options: one
+  vote_proposal_options: one, two
 
 two:
   topic: Ehdotus 2
@@ -14,3 +14,4 @@ two:
   max_options: 1
   published_at: 2017-07-26 07:46:18
   viewable_at: 2017-07-26 07:46:18
+  vote_proposal_options: one, two
