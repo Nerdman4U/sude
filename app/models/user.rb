@@ -26,6 +26,7 @@ class User < ApplicationRecord
   # Returns: Vote object (valid or not)
   #
   def vote proposal, values
+    # check that user has permission for this proposal (!)
     return unless proposal
     return unless proposal.is_a?(VoteProposal)
     return if values.blank?

@@ -1,5 +1,5 @@
 ActiveAdmin.register VoteProposal do
-  permit_params :topic, :min_options, :max_options, :published_at, :viewable_at, vote_proposal_option_ids: [], user_ids: [], group_ids: []
+  permit_params :topic, :description, :min_options, :max_options, :published_at, :viewable_at, vote_proposal_option_ids: [], user_ids: [], group_ids: []
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -19,6 +19,7 @@ ActiveAdmin.register VoteProposal do
   show do
     attributes_table do
       row :topic
+      row :description
       row :min_options
       row :max_options
       row :published_at

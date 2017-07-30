@@ -14,3 +14,32 @@
  *= require main
  *= require_self
  */
+
+.button.red {
+  background-color: brown;
+  color: white;
+}
+.button.voted {
+  background-color: #e74c3c;
+}
+
+.flash-messages {
+  position:absolute;
+  left:0; right:0; top: 1em;
+  text-align:center;
+  z-index: 20000;
+  color: white;
+  font-weight: bold;
+}
+.flash-messages > .notice {
+  background-color: blue;
+  padding: 1em;
+  font-size: large;
+  height: 5em;
+}
+.flash-messages > .alert {
+  background-color: red;
+  padding: 1em;
+  font-size: large;
+  height: 5em;
+}

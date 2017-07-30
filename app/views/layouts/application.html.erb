@@ -20,11 +20,8 @@
     </script>
   </head>
 
-  <body>
-    <div class="flash-messages">
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
-    </div>
+  <body data-turbolinks="false">
+    <%= flash_messages if !flash.empty? %>
 
     <%= yield(:header) %>
 
