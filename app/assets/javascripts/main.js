@@ -15,7 +15,6 @@
 	});
 
 	$(function() {
-
 		var	$window = $(window),
 			$body = $('body'),
 			$header = $('#header'),
@@ -44,12 +43,11 @@
 		// Header.
 			$header.each( function() {
 
-				var t 		= jQuery(this),
-					button 	= t.find('.button');
-
-				button.click(function(e) {
-
-					t.toggleClass('hide');
+			  var t 		= jQuery(this),
+			      button 	= t.find('.button-action');
+			  button.click(function(e) {
+                            
+			    t.toggleClass('hide');
 
 					if ( t.hasClass('preview') ) {
 						return true;

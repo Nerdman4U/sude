@@ -1,0 +1,23 @@
+<% content_for :header do %>
+  <%= render partial: "header" %>
+  <% end %>
+  
+<!-- Main -->
+<div id="main">
+  <div class="inner">
+    <div class="columns">
+      <%= will_paginate @vote_proposals %>
+
+      <% @vote_proposals.each do |vp| %>
+        <div class="image fit">
+          <%= link_to vote_proposal_path(vp) do %>
+          <h2 style="overflow:hidden;height:1.5em;"><%= vp.topic %></h2>
+          <% end %>
+	  <img src="images/pic01.jpg" alt="" /></a>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,15 @@
+<%
+   byebug
+   header_class = ""
+   header_class = "hide" if session[:header_shown]
+   %>
+<header id="header" class="<%= header_class %>">
+  <div class="inner">
+    <div class="content">
+      <h1><%= t("direct_democracy") %></h1>
+      <h2></h2>
+      <%= show_header_buttons %>
+    </div>
+    <a href="#" class="button button-action hidden"><span>Let's Go</span></a>
+  </div>
+</header>

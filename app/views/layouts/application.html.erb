@@ -9,10 +9,15 @@
       <%= javascript_include_tag 'admin', 'data-turbolinks-track': 'reload' %>
     <% else %>
       <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-      <%= stylesheet_link_tag params[:controller] %>
       <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <% end %>
+    <% if !["democracy","votes"].index(params[:controller]).nil? %>
+      <%= stylesheet_link_tag params[:controller] %>
       <%= javascript_include_tag params[:controller] %>
     <% end %>
+    <script type="text/javascript">
+      var header_shown = <%= session[:header_shown] ? 1 : 0 %>;
+    </script>
   </head>
 
   <body>
@@ -21,21 +26,7 @@
       <p class="alert"><%= alert %></p>
     </div>
 
-    <header id="header">
-      <div class="inner">
-	<div class="content">
-	  <h1>Suora Demokratia</h1>
-	  <h2></h2>
-          <% if user_signed_in? %>          
-            <%= link_to(t("sign_out"), destroy_user_session_path, method: :delete, class: "button big alt") %>
-          <% else %>
-          <%= link_to(t("sign_in"), new_user_session_path(locale: locale), class: "button big alt") %> tai
-          <a href="#" class="button big alt"><span>Jatka anonyymina</span></a>
-          <% end %>
-	</div>
-	<a href="#" class="button hidden"><span>Let's Go</span></a>
-      </div>
-    </header>
+    <%= yield(:header) %>
 
     <%= yield %>
 
