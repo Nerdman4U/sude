@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20170729093631) do
     t.string "acl"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["group_id", "user_id"], name: "index_group_permissions_on_group_id_and_user_id", unique: true
     t.index ["group_id"], name: "index_group_permissions_on_group_id"
     t.index ["user_id"], name: "index_group_permissions_on_user_id"
   end
@@ -120,8 +121,6 @@ ActiveRecord::Schema.define(version: 20170729093631) do
   create_table "vote_proposal_vote_proposal_tags", force: :cascade do |t|
     t.integer "vote_proposal_id"
     t.integer "vote_proposal_tag_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["vote_proposal_id"], name: "vopovopota_vopo_id"
     t.index ["vote_proposal_tag_id"], name: "vopovopota_vopota_id"
   end

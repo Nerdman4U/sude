@@ -1,6 +1,6 @@
 fi:
   instruction: Ohje
-  sign_in: Kirjaudu sisään
+  sign_in: Kirjaudu
   sign_out: Kirjaudu ulos
   direct_democracy: Suora demokratia
   routes:

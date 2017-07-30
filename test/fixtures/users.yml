@@ -7,4 +7,13 @@ one:
 two:
   email: test2@test.fi
   vote_proposals: one
+
+three:
+  email: test3@test.fi
+  status: 1
+
+four:
+  email: test4@test.fi
+  status: 2
+
   

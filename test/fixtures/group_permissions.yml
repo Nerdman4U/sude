@@ -3,9 +3,9 @@
 one:
   group: one
   user: one
-  acl: MyString
-
+  acl: r
+  
 two:
   group: two
   user: two
-  acl: MyString
+  acl: r

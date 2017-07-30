@@ -7,5 +7,6 @@ class CreateGroupPermissions < ActiveRecord::Migration[5.1]
 
       t.timestamps
     end
+    add_index :group_permissions, [:group_id, :user_id], unique: true
   end
 end

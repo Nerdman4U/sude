@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Suora Demokratia</title>
+    <title><%= t(:direct_democracy) %></title>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <% if params[:controller] == "admin" %>
+      <%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track': 'reload' %>
+      <%= javascript_include_tag 'admin', 'data-turbolinks-track': 'reload' %>
+    <% else %>
+      <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+      <%= stylesheet_link_tag params[:controller] %>
+      <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+      <%= javascript_include_tag params[:controller] %>
+    <% end %>
   </head>
 
   <body>
@@ -13,6 +20,44 @@
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>
     </div>
+
+    <header id="header">
+      <div class="inner">
+	<div class="content">
+	  <h1>Suora Demokratia</h1>
+	  <h2></h2>
+          <% if user_signed_in? %>          
+            <%= link_to(t("sign_out"), destroy_user_session_path, method: :delete, class: "button big alt") %>
+          <% else %>
+          <%= link_to(t("sign_in"), new_user_session_path(locale: locale), class: "button big alt") %> tai
+          <a href="#" class="button big alt"><span>Jatka anonyymina</span></a>
+          <% end %>
+	</div>
+	<a href="#" class="button hidden"><span>Let's Go</span></a>
+      </div>
+    </header>
+
     <%= yield %>
+
+    <footer id="footer">
+      <a href="#" class="info fa fa-info-circle"><span></span></a>
+      <div class="inner">
+	<div class="content">
+	  <h3>suorademokratia.net palvelua ylläpitää Suomen Demokratia ry.</h3>
+	  <p>In tempor porttitor nisl non elementum. Nulla ipsum ipsum, feugiat vitae vehicula vitae, imperdiet sed risus. Fusce sed dictum neque, id auctor felis. Praesent luctus sagittis viverra. Nulla erat nibh, fermentum quis enim ac, ultrices euismod augue. Proin ligula nibh, pretium at enim eget, tempor feugiat nulla.</p>
+	</div>
+	<div class="copyright">
+	  <h3>Follow me</h3>
+	  <ul class="icons">
+	    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+	    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+	    <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+	    <li><a href="#" class="icon fa-dribbble"><span class="label">Dribbble</span></a></li>
+	  </ul>
+	  &copy; Suomen Demokratia. Code: <a href="jonitoyryla.eu" target="_blank">Joni Töyrylä</a>. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com/">Unsplash</a>.
+	</div>
+      </div>
+    </footer>
+    
   </body>
 </html>
