@@ -1,2 +1,23 @@
-<h1><%= (I18n.t "instruction").capitalize %></h1>
-
+<% content_for :header do %>
+  <%= render partial: "header" %>
+<% end %>
+  
+<div id="preview" class="vertical">
+  <div class="inner">
+    <div class="image fit">
+      <img src="/images/pic04.jpg" alt="" />
+    </div>
+    <div class="content">
+      <article>
+      <header>
+	<h2>Tervetuloa käyttämään Suoraa Demokratiaa!</h2>
+      </header>
+      <p>
+        Ohjeeseen: käyttäjätunnukset ja äänestäminen, äänestysehdotuksen
+        lisääminen, anonyymikäyttäjä, kirjautunut sekä vahvistettu
+        käyttäjä. 
+      </p>
+      </article>
+    </div>
+  </div>
+</div>

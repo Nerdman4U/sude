@@ -1,0 +1,34 @@
+<% content_for :header do %>
+  <%= render partial: "header" %>
+<% end %>
+  
+<div id="preview" class="vertical">
+  <div class="inner">
+    <div class="image fit">
+      <img src="/images/pic10.jpg" alt="" />
+    </div>
+    <div class="content">
+      <article>
+      <header>
+	<h2>Liity Suomen Demokratia ry:n jäseneksi.</h2>
+        <p>Jäsenenä saat täyden käyttöoikeuden suorademokratia.net palveluun.</p>
+      </header>
+      <p>
+        Jäsenmaksun suuruus on 5 euroa / vuosi.
+      </p>
+      <p>
+        <% @check.banks.each do |bank| %>
+        <div style="float:left">
+        <form action="<%= bank[:url] %>" method="post">
+          <% bank[:xml].elements.each do |el| %>
+            <input type="hidden" name="<%= el.name %>" value="<%= el.text %>"/>
+          <% end %>
+          <span><input type="image" src="<%= bank[:icon] %>"/></span>
+        </form>
+        </div>
+        <% end %>
+      </p>
+      </article>
+    </div>
+  </div>
+</div>

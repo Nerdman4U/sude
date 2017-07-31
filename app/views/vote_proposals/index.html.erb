@@ -3,16 +3,12 @@
 <% end %>
   
 <!-- Main -->
-<div id="main">
-  <%= will_paginate @vote_proposals %>
+<div id="main" style="margin-top:2em">
   <div class="inner">
     <div class="columns">
 
       <% @vote_proposals.each do |vp| %>
-        <% i = rand(1..9) %>
         <div class="image fit">        
-	  <img src="images/pic0<%= i %>.jpg" alt="" /></a>
-
 <%
    p_ind= @vote_proposals.index(vp) - 1 
    n_ind = @vote_proposals.index(vp) + 1
@@ -21,15 +17,26 @@
    n_vp = @vote_proposals[n_ind]
    p_vp = @vote_proposals[p_ind]
 %>
-          <%= link_to vote_proposal_path(vp,n_vp,p_vp) do %>
-            <p style="margin-top:1em">
-              <%= vp.topic %>
-            </p>
-          <% end %>
+          <article style="border:1px dotted #ddd; padding: 8px;">
+            <header><%= link_to vp.topic, vote_proposal_path(vp,n_vp,p_vp) %></header>
+            <table>
+              <tr><td>Nimi</td><td>Anonyymi</td><td>Vahvistettu</td></tr>
+              <% vp.vote_proposal_options.each do |option|
+                 record = vp.find_counter_cache_record(option)
+                 %>
+              <tr>
+                <td><%= option.name %></td>
+                <td><%= record.anonymous_vote_count %></td>
+                <td><%= record.confirmed_vote_count %></td>
+              </tr>
+              <% end %>
+            </table>
+          </article>
         </div>
       <% end %>
 
     </div>
   </div>
+  <%= will_paginate @vote_proposals %>
 </div>
 

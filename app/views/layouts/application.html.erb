@@ -11,9 +11,12 @@
       <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
       <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <% end %>
-    <% if !["democracy","votes"].index(params[:controller]).nil? %>
+    <% if !["democracy","vote_proposals"].index(params[:controller]).nil? %>
       <%= stylesheet_link_tag params[:controller] %>
       <%= javascript_include_tag params[:controller] %>
+    <% end %>
+    <% if current_user and current_user.confirmed? %>      
+      <%= stylesheet_link_tag "confirmed" %>
     <% end %>
     <script type="text/javascript">
       var header_shown = <%= session[:header_shown] ? 1 : 0 %>;
@@ -42,7 +45,7 @@
 	    <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
 	    <li><a href="#" class="icon fa-dribbble"><span class="label">Dribbble</span></a></li>
 	  </ul>
-	  &copy; Suomen Demokratia. Code: <a href="jonitoyryla.eu" target="_blank">Joni Töyrylä</a>. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com/">Unsplash</a>.
+	  &copy; Suomen Demokratia Ry. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com/">Unsplash</a>.
 	</div>
       </div>
     </footer>

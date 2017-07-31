@@ -3,17 +3,21 @@
 one:
   email: test1@test.fi
   vote_proposals: one
+  fullname: "Matti Meikäläinen"
 
 two:
   email: test2@test.fi
   vote_proposals: one
+  fullname: "Heikki Meikäläinen"
 
 three:
   email: test3@test.fi
   status: 1
+  fullname: "Pekka Riku Meikäläinen"
 
 four:
   email: test4@test.fi
   status: 2
+  fullname: "Maija Meikäläinen"
 
   

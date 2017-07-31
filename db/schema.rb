@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170730182908) do
+ActiveRecord::Schema.define(version: 20170731071546) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -93,6 +93,8 @@ ActiveRecord::Schema.define(version: 20170730182908) do
     t.string "last_sign_in_ip"
     t.string "username"
     t.string "fullname"
+    t.integer "confirmed"
+    t.integer "foo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -114,6 +116,8 @@ ActiveRecord::Schema.define(version: 20170730182908) do
   create_table "vote_proposal_vote_proposal_options", force: :cascade do |t|
     t.integer "vote_proposal_id"
     t.integer "vote_proposal_option_id"
+    t.integer "anonymous_vote_count"
+    t.integer "confirmed_vote_count"
     t.index ["vote_proposal_id"], name: "vopovopoop_vopo_id"
     t.index ["vote_proposal_option_id"], name: "vopovopoop_vopoop_id"
   end
@@ -134,6 +138,8 @@ ActiveRecord::Schema.define(version: 20170730182908) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description"
+    t.integer "anonymous_vote_count"
+    t.integer "confirmed_vote_count"
   end
 
   create_table "vote_vote_proposal_options", force: :cascade do |t|
