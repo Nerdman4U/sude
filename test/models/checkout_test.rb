@@ -17,7 +17,7 @@ class CheckoutTest < ActiveSupport::TestCase
 
   test 'should return callback paths' do
     check = Checkout.new({user: users('one')})
-    assert check.return_callback
+    assert check.success_callback
     assert check.cancel_callback
     assert check.reject_callback
     assert check.delayed_callback
