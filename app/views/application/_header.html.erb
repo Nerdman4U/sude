@@ -2,6 +2,9 @@
    header_class = ""
    header_class = "hide" if session[:header_shown]
    %>
+<p style="position:absolute;right:0;width:50px;z-index:20002">
+  <%= query_diet_widget if Rails.env.development? %>
+</p>
 <header id="header" class="<%= header_class %>">
   <div class="inner">
     <div class="content">

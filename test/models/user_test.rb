@@ -4,7 +4,7 @@ class UserTest < ActiveSupport::TestCase
   def setup
     GroupPermission.delete_all
   end
-  
+
   test 'should add and remove permissions' do
     users('one').groups << groups('one')
     perm = GroupPermission.where(user_id: users('one').id, group_id: groups('one').id).first

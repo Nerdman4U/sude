@@ -1,5 +1,5 @@
 ActiveAdmin.register User do
-  permit_params :username, :fullname, group_ids: [], vote_proposal_ids: [], vote_ids: []
+  permit_params :email, :username, :fullname, group_ids: [], vote_proposal_ids: [], vote_ids: []
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -18,6 +18,7 @@ ActiveAdmin.register User do
 
   show do
     attributes_table do
+      row :email
       row :username
       row :fullname
       row :status
@@ -39,6 +40,7 @@ ActiveAdmin.register User do
   
   index do
     selectable_column
+    column :email
     column :username
     column :fullname
     column :status

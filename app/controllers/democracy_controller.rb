@@ -31,7 +31,7 @@ class DemocracyController < ApplicationController
   # 6  	 Used algorithm. Use 3. 	ALGORTH 	 3
   # 7 	MAC check 	MAC
   def checkout_success
-    status = params[:status]
+    status = params["STATUS"]
     if status == "2"
       current_user.confirmed = true
       current_user.save

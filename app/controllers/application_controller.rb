@@ -1,3 +1,67 @@
+# session[:foo] = {:value => "bar", :foo2 => {:value => "bar2"} }
+# session[:foo][:foo2] = {:value => "bar2"}
+#
+class SessionHandler
+  attr_reader :session
+  @@handler = nil
+  
+  def initialize session
+    @session = session
+  end
+  
+  def self.get session
+    @@handler ||= SessionHandler.new(session)
+  end
+  
+  def set keys, value
+    do_set(session, keys, value)
+  end
+  
+  def get keys
+    do_get(session, keys)
+  end
+
+  # Recursively set the value to the session
+  def do_set current, keys, value
+    if keys.blank?
+      current[:value] = value
+      return current
+    end
+
+    keys = [keys] unless keys.is_a? Array
+    current_key = keys.shift.to_sym
+    if current[current_key].blank?
+      current[current_key] = {:value => {}}
+    end
+    
+    if keys.size > 0
+      current[current_key] = do_set(current[current_key], keys, value)
+    else
+      current[current_key][:value] = value      
+    end
+    
+    current
+  end
+
+  # Recursively find the correct value from the session
+  def do_get current, keys    
+    keys = [keys] unless keys.is_a? Array
+    if keys.blank?
+      if current.is_a?(Hash) and current.has_key?(:value)
+        return current[:value]
+      else
+        return current
+      end
+    end
+    current_key = keys.shift.to_sym
+    if current[current_key].blank?
+      current[current_key]
+    else
+      do_get(current[current_key], keys)
+    end
+  end
+end
+
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
@@ -28,11 +92,15 @@ class ApplicationController < ActionController::Base
     @cached_guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
 
   rescue ActiveRecord::RecordNotFound # if session[:guest_user_id] invalid
-     session[:guest_user_id] = nil
-     guest_user if with_retry
+    session[:guest_user_id] = nil
+    guest_user if with_retry
   end
 
   private
+
+  def session_handler
+    SessionHandler.get(session)
+  end
 
   # called (once) when the user logs in, insert any code your application needs
   # to hand off from guest_user to current_user.
@@ -40,8 +108,8 @@ class ApplicationController < ActionController::Base
     # For example:
     # guest_comments = guest_user.comments.all
     # guest_comments.each do |comment|
-      # comment.user_id = current_user.id
-      # comment.save!
+    # comment.user_id = current_user.id
+    # comment.save!
     # end
   end
 

@@ -38,17 +38,16 @@
           <% end %>
         <% end %>
       </p>
-    </div>
-    
+    </div>    
   </div>
   
   <% if @prev %>
-    <%= link_to vote_proposal_path(@prev,@current.id,-1), class: "nav previous" do %>
+    <%= link_to vote_proposal_path(@prev), class: "nav previous" do %>
       <span class="fa fa-chevron-left"></span>
     <% end %>
   <% end %>
   <% if @next %>
-    <%= link_to vote_proposal_path(@next,-1,@current.id), class: "nav next" do %>
+    <%= link_to vote_proposal_path(@next), class: "nav next" do %>
       <span class="fa fa-chevron-right"></span>
     <% end %>
   <% end %>

@@ -18,7 +18,7 @@
    p_vp = @vote_proposals[p_ind]
 %>
           <article style="border:1px dotted #ddd; padding: 8px;">
-            <header><%= link_to vp.topic, vote_proposal_path(vp,n_vp,p_vp) %></header>
+            <header><%= link_to vp.topic, vote_proposal_path(vp) %></header>
             <table>
               <tr><td>Nimi</td><td>Anonyymi</td><td>Vahvistettu</td></tr>
               <% vp.vote_proposal_options.each do |option|

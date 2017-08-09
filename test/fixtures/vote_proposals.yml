@@ -15,3 +15,12 @@ two:
   published_at: 2017-07-26 07:46:18
   viewable_at: 2017-07-26 07:46:18
   vote_proposal_options: one, two
+
+three:
+  topic: Ehdotus 3
+  min_options: 1
+  max_options: 2
+  published_at: 2017-07-26 07:46:18
+  viewable_at: 2017-07-26 07:46:18
+  vote_proposal_options: one, two
+
