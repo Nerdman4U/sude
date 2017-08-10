@@ -34,19 +34,21 @@ class VoteProposalsController < ApplicationController
     ids = proposal_ids_from_session
     current = current_proposal_from_session
     return unless ids
+    return unless ids.is_a? Array
     return unless current
     next_id = ids.index(current) + 1
     next_id = 0 if next_id >= ids.count 
-    ids[next_id]
+    VoteProposal.find(ids[next_id]) rescue nil
   end
   def previous_proposal_from_session
     ids = proposal_ids_from_session
     current = current_proposal_from_session
     return unless ids
+    return unless ids.is_a? Array
     return unless current
     prev_id = ids.index(current) - 1
     prev_id = ids.count-1 if prev_id < 0
-    ids[prev_id]    
+    VoteProposal.find(ids[prev_id]) rescue nil
   end
   
 end

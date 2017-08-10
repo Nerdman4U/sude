@@ -5,12 +5,18 @@ class SessionHandler
   attr_reader :session
   @@handler = nil
   
-  def initialize session
-    @session = session
+  def initialize
   end
-  
-  def self.get session
-    @@handler ||= SessionHandler.new(session)
+
+  def set_session session
+    @session = session
+    #puts "session.object_id:#{session.object_id}"
+    self
+  end
+
+  # Singleton
+  def self.get
+    @@handler ||= SessionHandler.new
   end
   
   def set keys, value
@@ -49,11 +55,13 @@ class SessionHandler
     if keys.blank?
       if current.is_a?(Hash) and current.has_key?(:value)
         return current[:value]
+      elsif current.is_a?(Hash) and current.has_key?("value")
+        return current["value"]
       else
         return current
       end
     end
-    current_key = keys.shift.to_sym
+    current_key = keys.shift
     if current[current_key].blank?
       current[current_key]
     else
@@ -99,7 +107,7 @@ class ApplicationController < ActionController::Base
   private
 
   def session_handler
-    SessionHandler.get(session)
+    SessionHandler.get.set_session(session)    
   end
 
   # called (once) when the user logs in, insert any code your application needs

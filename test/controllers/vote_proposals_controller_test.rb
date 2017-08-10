@@ -5,7 +5,7 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
   test 'should set proposal ids to session' do
     get vote_proposals_url
     handler = controller.send(:session_handler)
-    list = handler.get([:proposals, :list])
+    list = handler.get(:proposals)
     assert list.is_a? Array
     assert list.count > 0
   end

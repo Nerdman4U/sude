@@ -9,6 +9,11 @@ class VoteProposal < ApplicationRecord
   has_many :vote_proposal_vote_proposal_options
   has_many :vote_proposal_options, -> {distinct}, through: :vote_proposal_vote_proposal_options
 
+
+  def to_param
+    [id, topic.parameterize].join("-")
+  end
+  
   # params: option VoteProposalOption
   def find_counter_cache_record option
     vote_proposal_vote_proposal_options.where(vote_proposal_option_id: option.id).first
