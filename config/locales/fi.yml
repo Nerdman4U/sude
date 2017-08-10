@@ -5,3 +5,6 @@ fi:
   direct_democracy: Suora demokratia
   routes:
     instruction: ohje
+    vote_proposals: ääniehdotukset
+    show: näytä
+    

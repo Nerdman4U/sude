@@ -7,6 +7,7 @@ one:
   published_at: 2017-07-26 07:46:18
   viewable_at: 2017-07-26 07:46:18
   vote_proposal_options: one, two
+  slug: ehdotus-1
 
 two:
   topic: Ehdotus 2
@@ -15,6 +16,7 @@ two:
   published_at: 2017-07-26 07:46:18
   viewable_at: 2017-07-26 07:46:18
   vote_proposal_options: one, two
+  slug: ehdotus-2
 
 three:
   topic: Ehdotus 3
@@ -23,4 +25,5 @@ three:
   published_at: 2017-07-26 07:46:18
   viewable_at: 2017-07-26 07:46:18
   vote_proposal_options: one, two
+  slug: ehdotus-3
 

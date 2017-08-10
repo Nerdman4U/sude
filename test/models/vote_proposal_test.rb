@@ -1,6 +1,20 @@
 require 'test_helper'
 
 class VoteProposalTest < ActiveSupport::TestCase
+
+  test 'should find vote proposal with old and new slugged name' do
+    old_slug = vote_proposals('one').slug
+    vote_proposals('one').topic = "foobar"
+    vote_proposals('one').save
+    assert_equal vote_proposals('one').friendly_id, "ehdotus-1"
+
+    vote_proposals('one').slug = nil
+    vote_proposals('one').save
+    assert_equal vote_proposals('one').friendly_id, "foobar"
+
+    assert VoteProposal.friendly.find("foobar")
+    assert VoteProposal.friendly.find(old_slug)       
+  end
   test 'should create persisted vote_proposal object' do
     assert vote_proposals('one').persisted?
   end

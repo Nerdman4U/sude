@@ -1,4 +1,8 @@
 class VoteProposal < ApplicationRecord
+  extend FriendlyId
+
+  friendly_id :topic, use: [:slugged, :history]
+  
   has_many :user_vote_proposals
   has_many :users, -> {distinct}, through: :user_vote_proposals
   has_many :votes
@@ -9,10 +13,15 @@ class VoteProposal < ApplicationRecord
   has_many :vote_proposal_vote_proposal_options
   has_many :vote_proposal_options, -> {distinct}, through: :vote_proposal_vote_proposal_options
 
+  
+  # # TODO: what if topic has numbers
+  # def to_param
+  #   slug
+  # end
 
-  def to_param
-    [id, topic.parameterize].join("-")
-  end
+  # def slug
+  #   [id, topic.parameterize].join("-")
+  # end
   
   # params: option VoteProposalOption
   def find_counter_cache_record option

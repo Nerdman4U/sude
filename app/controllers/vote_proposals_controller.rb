@@ -12,7 +12,7 @@ class VoteProposalsController < ApplicationController
       return
     end
 
-    @current = VoteProposal.find(params[:id])
+    @current = VoteProposal.friendly.find(params[:id])
     session_handler.set([:proposals, :current], @current.id)
     
     @next = next_proposal_from_session
