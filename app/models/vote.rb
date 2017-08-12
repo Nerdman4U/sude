@@ -9,14 +9,51 @@ class Vote < ApplicationRecord
 
   before_save :defaults_before_save
   
-  accepts_nested_attributes_for :vote_proposal_options
+  accepts_nested_attributes_for :vote_proposal_options,
+                                allow_destroy: true
+
+
+  # Modify parameters for update attributes method.
+  #
+  # Add vote options from vote to params if they are not included
+  # already and vote proposal has an option (min_votes, max_votes) to
+  # allow multiple vote options.
+  #
+  # Note: Vote proposals min_votes option cannot be used currently
+  # because user selects options one by one. The first select is always
+  # invalid if min_option is greater than 1.
+  #
+  # Later, this could be done so that in show view vote is saved only
+  # after user loads different action. In show update_attributes are
+  # building a <tt>new record</tt> and thus validation can occur later.
+  def refactor_params! params
+    max = vote_proposal.max_options
+    if params["vote_proposal_option_ids"]
+      opt_ids = vote_proposal_options.map(&:id)
+      return if max <= opt_ids.count
+      ids = params["vote_proposal_option_ids"]
+      ids << opt_ids
+      params["vote_proposal_option_ids"] = ids.flatten.uniq
+    elsif params["vote_proposal_options_attributes"]
+      opt_ids = vote_proposal_options.map {|o| {id: o.id}}
+      return if max <= opt_ids.count
+      ids = params["vote_proposal_options_attributes"]
+      ids << opt_ids
+      params["vote_proposal_options_attributes"] = ids.flatten.uniq
+    end
+  end
 
   def defaults_before_save
     self.selected_options = build_selected_options
     update_proposal_counter_cache if self.valid?
   end
 
+  # Update counter cache column in vote proposal. Anonymous users have
+  # different cache. 
+  # 
   # Add counter only when creating new vote.
+  #
+  # TODO: Why we are adding counter cache for every OPTION?
   def update_proposal_counter_cache
     return unless new_record?
 
@@ -33,7 +70,10 @@ class Vote < ApplicationRecord
       end
     end
   end
-  
+
+  # Build a string for a column +selected_options+.
+  #
+  # This is a backup/debug solution at this time.
   def build_selected_options
     vote_proposal_options.map(&:name).sort.join("|")    
   end
@@ -44,8 +84,8 @@ class Vote < ApplicationRecord
     end
   end
   
-  # Selected options must be found from proposal.
-  # Return boolean
+  # Returns true if selected vote options are found from proposal.
+  #
   def verify_vote_proposal_options
     return true unless vote_proposal_options
     correct_options = vote_proposal.vote_proposal_options.map(&:name)

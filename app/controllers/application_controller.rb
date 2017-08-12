@@ -1,20 +1,27 @@
-# session[:foo] = {:value => "bar", :foo2 => {:value => "bar2"} }
-# session[:foo][:foo2] = {:value => "bar2"}
+# SessionHandler stores and retrieves values from session.
+#
+# ==== Examples
+#
+#   > session_handler.set(:foo,"bar")
+#   > session_handler.get(:foo)
+#   # => "bar"
+#   # +session+ {foo: {value: "bar" }}
+#
+#   > session_handler.set([:foo,:bar], "bar2")
+#   > session_handler.get(:foo)
+#   # => "bar2"
+#   # +session+ {foo: {value: "bar" }, foo2: {value: "bar2"}}
 #
 class SessionHandler
   attr_reader :session
   @@handler = nil
-  
-  def initialize
-  end
 
   def set_session session
     @session = session
-    #puts "session.object_id:#{session.object_id}"
     self
   end
 
-  # Singleton
+  # Initiate or return the singleton object
   def self.get
     @@handler ||= SessionHandler.new
   end
@@ -49,7 +56,7 @@ class SessionHandler
     current
   end
 
-  # Recursively find the correct value from the session
+  # Recursively find the value from the session.
   def do_get current, keys    
     keys = [keys] unless keys.is_a? Array
     if keys.blank?

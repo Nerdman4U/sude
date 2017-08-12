@@ -7,4 +7,10 @@ fi:
     instruction: ohje
     vote_proposals: ääniehdotukset
     show: näytä
-    
+  activerecord:
+    errors:
+      models:
+        vote:
+          attributes:
+            user:
+              required: Käyttäjä

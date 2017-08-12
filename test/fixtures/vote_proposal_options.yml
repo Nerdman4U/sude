@@ -1,12 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: no
+  name: "no"
 
 two:
-  name: yes
+  name: "yes"
 
 three:
-  name: canada
+  name: "canada"
 
   
