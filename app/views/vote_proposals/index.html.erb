@@ -4,6 +4,7 @@
   
 <!-- Main -->
 <div id="main" style="margin-top:2em">
+  <%= will_paginate @vote_proposals %>
   <div class="inner">
     <div class="columns">
 
@@ -25,7 +26,12 @@
                  record = vp.find_counter_cache_record(option)
                  %>
               <tr>
-                <td><%= option.name %></td>
+                <td>
+                  <%# vp.current_vote => vote for current user for this proposal %>
+                      
+                  <%= link_to option.name, "", remote: true, method: :post, class: "button small red" %>
+ 
+                </td>
                 <td><%= record.anonymous_vote_count %></td>
                 <td><%= record.confirmed_vote_count %></td>
               </tr>

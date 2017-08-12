@@ -14,3 +14,7 @@ fi:
           attributes:
             user:
               required: Käyttäjä
+  will_paginate:
+    next_label: Seuraava
+    previous_label: Edellinen
+      
