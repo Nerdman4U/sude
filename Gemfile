@@ -53,7 +53,8 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'capistrano', '~> 3.6'
   gem 'capistrano-rails', '~> 1.3'
-  gem 'query_diet'
+  gem 'query_diet' # show amount of queries
+  gem 'single_test' # run a single method inside testfile, rake test:user:my_test
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

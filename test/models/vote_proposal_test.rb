@@ -2,6 +2,22 @@ require 'test_helper'
 
 class VoteProposalTest < ActiveSupport::TestCase
 
+  test 'should return proposals in the groups current user has' do
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    # proposals = VoteProposal.with_my_votes(users('one'))
+    # my_id = users('one').id
+    # sql = "SELECT * FROM vote_proposals LEFT OUTER JOIN votes ON vote_proposals.id = votes.vote_proposal_id WHERE votes.user_id = #{my_id}"
+    # records =  ActiveRecord::Base.connection.execute(sql)    
+    # with_options = proposals.votes.with_options
+
+    vps = VoteProposal.in_permitted_groups(users('one'))
+    assert_equal vps.count, 1
+    assert_equal vps.first.topic, "Ehdotus 1"
+
+    
+    vps = VoteProposal.global_or_permitted(users('one'))
+  end
+
   test 'should find vote proposal with old and new slugged name' do
     old_slug = vote_proposals('one').slug
     vote_proposals('one').topic = "foobar"
