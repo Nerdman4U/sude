@@ -16,7 +16,7 @@ class User < ApplicationRecord
   after_initialize :defaults_for_new
 
   def vote_in_proposal proposal
-    votes.select {|vote| vote.vote_proposal == proposal}.first
+    votes.includes(:vote_proposal).select {|vote| vote.vote_proposal == proposal}.first
   end
 
   def has_voted? proposal

@@ -12,9 +12,12 @@
 	<h2><%= @current.topic %></h2 >
       </header>
       <p><%= @current.description %></p>
-      <p>
-        <% @current.vote_proposal_options.each do |option| %>
-          <% css_class = "button big red" %>
+      <div>
+        <% @current.vote_proposal_options.each do |option|
+           record = @current.find_counter_cache_record(option)
+           css_class = "button big red"
+        %>
+        <div style="float:left;padding-right:2px;">
           <% if @vote
              ind = @vote.vote_proposal_options.index(option)
              if ind && (ind >= 0)
@@ -37,8 +40,21 @@
           %>
           <%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}" %>
           <% end %>
+          <div>
+            <table style="font-size:small">
+              <tr>
+                <td>Anonymous</td><td><%= record.anonymous_vote_count || 0 %></td>
+              </tr>
+              <tr>
+                <td>Confirmed</td>                
+                <td><%= record.confirmed_vote_count || 0%></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+          
         <% end %>
-      </p>
+      </div>
     </div>    
   </div>
   

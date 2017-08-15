@@ -49,8 +49,8 @@
                   <td><%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}" %></td>
                   
               <% end %>
-                <td><%= record.anonymous_vote_count %></td>
-                <td><%= record.confirmed_vote_count %></td>
+                <td><%= record.anonymous_vote_count || 0%></td>
+                <td><%= record.confirmed_vote_count || 0%></td>
               </tr>
               <% end %>
             </table>

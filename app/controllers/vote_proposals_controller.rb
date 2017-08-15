@@ -4,7 +4,7 @@ class VoteProposalsController < ApplicationController
   def index
     @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).global.paginate(:page => params[:page], :per_page => 10)
 
-    # {:vote_proposal_id => <VOTE>}
+   # {:vote_proposal_id => <VOTE>}
     @votes = {}
     # Add current_user vote to eah
     @vote_proposals.each do |vp|

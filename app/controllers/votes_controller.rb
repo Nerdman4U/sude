@@ -15,7 +15,7 @@ class VotesController < ApplicationController
     proposal = vote_params[:vote_proposal_id]
     Vote.create(vote_params)
     
-    redirect_to vote_proposal_path(proposal)
+    redirect_back(fallback_location: vote_proposal_path(proposal))
   end
 
   # Update is currently updating one vote option per request. This
@@ -38,7 +38,7 @@ class VotesController < ApplicationController
     vote.refactor_params! vote_params
     vote.update_attributes vote_params
     
-    redirect_to vote_proposal_path(vote.vote_proposal)
+    redirect_back(fallback_location: vote_proposal_path(vote.vote_proposal))
   end
 
 end
