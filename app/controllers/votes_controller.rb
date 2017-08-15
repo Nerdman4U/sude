@@ -32,7 +32,7 @@ class VotesController < ApplicationController
 
     vote = Vote.where({
                         id: vote_id,
-                        # user_id: current_or_guest_user.id
+                        user_id: current_or_guest_user.id
                       }).first
 
     vote.refactor_params! vote_params

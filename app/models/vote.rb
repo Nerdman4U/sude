@@ -1,11 +1,12 @@
 class Vote < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, :inverse_of => :votes
   belongs_to :vote_proposal
   has_many :vote_vote_proposal_options
   has_many :vote_proposal_options, through: :vote_vote_proposal_options
 
   validates :user, :vote_proposal, presence: true
   validate :vote_proposal_options_must_be_found_at_proposal
+  validate :user_can_have_only_one_vote_per_proposal
 
   before_save :defaults_before_save
   
@@ -13,8 +14,21 @@ class Vote < ApplicationRecord
                                 allow_destroy: true
 
   scope :with_options, -> () { joins(:vote_proposal_options) }
-  
 
+  
+  # NOTE: This is too heavy validation.
+  #
+  # User cannot have more than one vote per vote_proposal.
+  #
+  def user_can_have_only_one_vote_per_proposal
+    if Vote.any? { |vote|
+         vote.user_id == user_id && vote.vote_proposal_id == vote_proposal_id && vote.id != id
+       }
+      errors.add(:base,
+                 "There can be only one vote in proposal for user")
+    end
+  end
+  
   # Modify parameters for update attributes method.
   #
   # Add vote options from vote to params if they are not included

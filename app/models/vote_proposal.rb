@@ -13,38 +13,49 @@ class VoteProposal < ApplicationRecord
   has_many :vote_proposal_vote_proposal_options
   has_many :vote_proposal_options, -> {distinct}, through: :vote_proposal_vote_proposal_options
 
+
+  scope :global_arel, -> {
+    proposals = Arel::Table.new(:vote_proposals)
+    group_vote_proposals = Arel::Table.new(:group_vote_proposals)
+    proposals.join(group_vote_proposals).on(group_vote_proposals[:vote_proposals_id].eq(proposals[:id]))
+    # proposals.join(group_vote_proposals, Arel::Nodes::OuterJoin).on(group_vote_proposals[:vote_proposal_id].eq(group_vote_proposals[:group_id]))
+  }
   
-  # SELECT vote_proposals.id, groups.id FROM "vote_proposals" LEFT JOIN "group_vote_proposals" ON "group_vote_proposals"."vote_proposal_id" = "vote_proposals"."id" LEFT JOIN "groups" ON groups.id = group_vote_proposals.group_id group by vote_proposals.id having count(groups.id) = 0;
   scope :all_with_groups, -> {
     left_joins(:groups).group("vote_proposals.id")
   }
+
   scope :global, -> {
-    all_with_groups.having("count(groups.id) = 0").order(:confirmed_vote_count)
+    all_with_groups.having("count(groups.id) = 0")
   }
-  # Note: This seems to be correct
+
   scope :in_permitted_groups, -> (user) {
     left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ?", user.id);
   }
-  # TODO: this is not working
+
   scope :global_or_permitted, -> (user) {
-    global.in_permitted_groups(user).unscope(:having)
+    global.includes(:votes) + in_permitted_groups(user).includes(:votes)
   }
+  
+  # NOTE: this is just for testing purposes
   scope :permitted_with_sql, -> (user) {
     find_by_sql('SELECT vote_proposals.id, groups.id FROM "vote_proposals" LEFT JOIN "group_vote_proposals" ON "group_vote_proposals"."vote_proposal_id" = "vote_proposals"."id" LEFT JOIN "groups" ON groups.id = group_vote_proposals.group_id LEFT JOIN "group_permissions" ON "group_permissions.group_id" = "groups.id" WHERE group_permissions.user_id = 980190962') 
   }
   
-  # # TODO: what if topic has numbers
-  # def to_param
-  #   slug
-  # end
 
-  # def slug
-  #   [id, topic.parameterize].join("-")
-  # end
-  
+  # Find join table for vote proposal option.
+  #
+  # It is expected that this method is called after querying records
+  # with includes. Select wont trigger sql queries as where would.
+  #
   # params: option VoteProposalOption
+  #
+  # TODO: rename as "find_join_table_record" (?)
   def find_counter_cache_record option
-    vote_proposal_vote_proposal_options.where(vote_proposal_option_id: option.id).first
+    # vote_proposal_vote_proposal_options.select(vote_proposal_option_id: option.id).first
+    vote_proposal_vote_proposal_options.select {|join_table|
+      join_table.vote_proposal_option_id == option.id
+    }.first
   end
 
   

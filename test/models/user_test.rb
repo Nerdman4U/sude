@@ -5,6 +5,17 @@ class UserTest < ActiveSupport::TestCase
     GroupPermission.delete_all
   end
 
+  test 'should return true if the user has voted this proposal' do
+    assert users('one').has_voted?(vote_proposals('one'))
+  end
+
+  test 'should return the vote this user has in given vote proposal' do
+    vote = users('one').vote_in_proposal(vote_proposals('one'))
+    assert vote
+    assert vote.is_a? Vote
+    assert_equal vote.vote_proposal, vote_proposals('one')
+  end
+
   test 'should add and remove permissions' do
     users('one').groups << groups('one')
     perm = GroupPermission.where(user_id: users('one').id, group_id: groups('one').id).first
@@ -43,6 +54,7 @@ class UserTest < ActiveSupport::TestCase
     # assert_equal GroupPermission.count, count
   end
   test 'should allow user to vote a vote proposal' do
+    users('one').votes.clear
     assert_difference 'Vote.count' do
       users('one').vote(vote_proposals('two'),vote_proposal_options('one'))
     end

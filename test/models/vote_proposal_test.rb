@@ -2,22 +2,37 @@ require 'test_helper'
 
 class VoteProposalTest < ActiveSupport::TestCase
 
-  test 'should return proposals in the groups current user has' do
+  # Is it possible to return all items in one query?
+  #
+  # - VoteProposals without groups (global)
+  # - VoteProposals in the groups user has access
+  # - user Votes in VoteProposals (vote_proposal.vote)
+  # - Groups where user has access (vote_proposals.groups)
+  #
+  test 'should return global proposals or proposals in the groups user is with Arel' do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
-    # proposals = VoteProposal.with_my_votes(users('one'))
-    # my_id = users('one').id
-    # sql = "SELECT * FROM vote_proposals LEFT OUTER JOIN votes ON vote_proposals.id = votes.vote_proposal_id WHERE votes.user_id = #{my_id}"
-    # records =  ActiveRecord::Base.connection.execute(sql)    
-    # with_options = proposals.votes.with_options
-
-    vps = VoteProposal.in_permitted_groups(users('one'))
-    assert_equal vps.count, 1
-    assert_equal vps.first.topic, "Ehdotus 1"
-
-    
-    vps = VoteProposal.global_or_permitted(users('one'))
+    # query = VoteProposal.global_arel
+    # ActiveRecord::Base.connection.execute(query.to_sql)
   end
 
+  test 'should return vote proposals in the groups user is' do
+    vps = VoteProposal.in_permitted_groups(users('one'))
+    assert_equal vps.count, 1
+    assert vps.first.groups.count > 0
+  end
+
+  test 'should return global vote proposals' do
+    vps = VoteProposal.global.to_a
+    assert_equal vps.count, 1
+    assert_equal vps.first.topic, "Ehdotus 3"
+  end
+  
+  test 'should return global proposals or proposals in the groups user is' do
+    vps = VoteProposal.global_or_permitted(users('one'))
+    assert_equal vps.count, 2
+    assert vps[1].groups.count > 0
+  end
+    
   test 'should find vote proposal with old and new slugged name' do
     old_slug = vote_proposals('one').slug
     vote_proposals('one').topic = "foobar"

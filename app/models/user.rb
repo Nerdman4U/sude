@@ -3,7 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable
-  has_many :votes
+  has_many :votes, :inverse_of => :user
   has_many :user_vote_proposals
   has_many :vote_proposals, through: :user_vote_proposals
   has_many :group_permissions
@@ -14,6 +14,14 @@ class User < ApplicationRecord
   # scope :groups_with_permissions, -> { joins(:groups,:group_permissions).select("groups.id as group_id,groups.name as groupname,users.id as user_id,users.username,group_permissions.acl") }
 
   after_initialize :defaults_for_new
+
+  def vote_in_proposal proposal
+    votes.select {|vote| vote.vote_proposal == proposal}.first
+  end
+
+  def has_voted? proposal
+    votes.any? {|vote| vote.vote_proposal == proposal}
+  end
 
   def defaults_for_new
     self.status = 0
@@ -30,6 +38,12 @@ class User < ApplicationRecord
     return unless proposal
     return unless proposal.is_a?(VoteProposal)
     return if values.blank?
+
+    if has_voted? proposal
+      Rails.logger.error("User (#{id} #{username}) has already voted this proposal (#{proposal.id} #{proposal.topic})")
+      return
+    end
+    
     values = [values] if values.is_a?(VoteProposalOption)
     # values = values.filter.map {|v| !v.is_a?(VoteProposal)}
     Vote.create({

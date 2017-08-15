@@ -2,7 +2,16 @@ class VoteProposalsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    @vote_proposals = VoteProposal.global.paginate(:page => params[:page], :per_page => 10)    
+    @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).global.paginate(:page => params[:page], :per_page => 10)
+
+    # {:vote_proposal_id => <VOTE>}
+    @votes = {}
+    # Add current_user vote to eah
+    @vote_proposals.each do |vp|
+      vote = current_or_guest_user.vote_in_proposal(vp)
+      @votes[vp.id] = vote if vote
+    end
+
     session_handler.set(:proposals, @vote_proposals.map(&:id))
   end
 

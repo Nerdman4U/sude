@@ -6,6 +6,22 @@ class VoteTest < ActiveSupport::TestCase
     @wrong_option = VoteProposalOption.new(name: "Tämä valinta on virheellinen")
   end
 
+  test 'should not allow multiple votes for same user on proposal' do
+    proposal = votes('one').vote_proposal
+    user = votes('one').user
+
+    assert votes('one').valid?
+    assert_no_difference 'Vote.count' do
+      params = {
+        vote_proposal: proposal,
+        user: user,
+        vote_proposal_options: [vote_proposal_options('one')]
+      }
+      vote = Vote.create(params)
+    end
+
+  end
+
   test 'should refactor update parametes' do
     opt1 = vote_proposal_options('one')
     opt2 = vote_proposal_options('two')

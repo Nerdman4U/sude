@@ -22,16 +22,33 @@
             <header><%= link_to vp.topic, vote_proposal_path(vp) %></header>
             <table>
               <tr><td>Nimi</td><td>Anonyymi</td><td>Vahvistettu</td></tr>
-              <% vp.vote_proposal_options.each do |option|
-                 record = vp.find_counter_cache_record(option)
-                 %>
               <tr>
-                <td>
-                  <%# vp.current_vote => vote for current user for this proposal %>
-                      
-                  <%= link_to option.name, "", remote: true, method: :post, class: "button small red" %>
- 
-                </td>
+              <% vp.vote_proposal_options.each do |option|
+                record = vp.find_counter_cache_record(option)
+                css_class = "button small red"
+                 vote = @votes[vp.id]
+                 if vote
+                  ind = vote.vote_proposal_options.index(option)
+                  if ind && (ind >= 0)
+                    css_class += " voted"
+                    par = {
+                      vote: { vote_proposal_options_attributes: [{id: option.id, _destroy: true}] }
+                    }
+                  else
+                    par = { vote: { vote_proposal_option_ids: [option.id] } }
+                  end
+                 %>
+                 <td><%= link_to option.name, update_vote_path(vote, par), remote: true, method: :put, class: "#{css_class}" %></td>
+                <% else
+                  par = {
+                     vote: {
+                       vote_proposal_id: vp.id,
+                       vote_proposal_option_ids: [option.id]
+                     }
+                  } %>
+                  <td><%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}" %></td>
+                  
+              <% end %>
                 <td><%= record.anonymous_vote_count %></td>
                 <td><%= record.confirmed_vote_count %></td>
               </tr>

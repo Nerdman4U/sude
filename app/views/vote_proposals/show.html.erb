@@ -28,14 +28,14 @@
           %>
           <%= link_to option.name, update_vote_path(@vote, par), remote: true, method: :put, class: "#{css_class}" %>          
           <% else %>
-            <% options = {
+            <% par = {
                vote: {
                  vote_proposal_id: @current.id,
                  vote_proposal_option_ids: [option.id]
                }
              }
           %>
-          <%= link_to option.name, create_vote_path(options), remote: true, method: :post, class: "#{css_class}" %>
+          <%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}" %>
           <% end %>
         <% end %>
       </p>
