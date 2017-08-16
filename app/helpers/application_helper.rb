@@ -1,5 +1,12 @@
 # coding: utf-8
 module ApplicationHelper
+
+  def show_header?
+    !!session[:header_shown] or user_signed_in?
+  end
+
+  # Render different buttons based on different situation. Set session
+  # flag to prevent header to be shown in straight after next request.  
   def show_header_buttons
     session[:header_shown] = 1
     if user_signed_in?

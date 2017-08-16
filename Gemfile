@@ -40,9 +40,16 @@ gem 'jbuilder', '~> 2.5'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+end
+
+group :test do
   gem 'capybara', '~> 2.13.0'
   gem 'selenium-webdriver'
   gem 'mocha'
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
+  gem 'database_cleaner'
 end
 
 group :development do

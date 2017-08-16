@@ -5,74 +5,84 @@ class UserTest < ActiveSupport::TestCase
     GroupPermission.delete_all
   end
 
+  test 'should remove jointable record when user is removed' do
+    user = create(:user_with_group)
+    count = GroupPermission.where(user_id: user.id).count
+    assert count > 0
+    group2 = create(:group)
+    assert_difference "GroupPermission.count" do
+      user.groups << group2
+    end
+    #assert_difference "GroupPermission.count" do
+    #  user.destroy
+    #end
+  end
+
   test 'should return true if the user has voted this proposal' do
-    assert users('one').has_voted?(vote_proposals('one'))
+    user = create(:user_with_votes)
+    proposal = user.votes.first.vote_proposal
+    user.has_voted?(proposal)
   end
 
   test 'should return the vote this user has in given vote proposal' do
-    vote = users('one').vote_in_proposal(vote_proposals('one'))
+    user = create(:user_with_votes)
+    proposal = user.votes.first.vote_proposal
+    vote = user.vote_in_proposal(proposal)
     assert vote
     assert vote.is_a? Vote
-    assert_equal vote.vote_proposal, vote_proposals('one')
+    assert_equal vote.vote_proposal, proposal
   end
 
   test 'should add and remove permissions' do
-    users('one').groups << groups('one')
-    perm = GroupPermission.where(user_id: users('one').id, group_id: groups('one').id).first
+    user = create(:user_with_group)
+    group = user.groups.first
+
+    perm = GroupPermission.where(user_id: user.id, group_id: group.id).first
     assert perm.present?
     assert_equal perm.acl, ""
 
-    users('one').add_permission(groups('one'), 'rw')
+    user.add_permission(group, 'rw')
     perm.reload
     assert_equal perm.acl, "rw"
 
-    users('one').add_permission(groups('one'), 'x')
+    user.add_permission(group, 'x')
     perm.reload
     assert_equal perm.acl, "rwx"
 
-    users('one').remove_permission(groups('one'), 'w')
+    user.remove_permission(group, 'w')
     perm.reload
     assert_equal perm.acl, "rx"
 
-    users('one').remove_permissions(groups('one'))
+    user.remove_permissions(group)
     perm.reload
     assert_equal perm.acl, ""
     
-    users('one').add_permission(groups('one'), 'xrw')
+    user.add_permission(group, 'xrw')
     perm.reload
     assert_equal perm.acl, "rwx"    
   end
 
-  test 'should remove jointable record when user is removed' do
-    # viite-eheys ei toimi:
-    #
-    # count = GroupPermission.where(user_id: users('one')).count
-
-    # users('one').groups << groups('one')
-    # assert_equal GroupPermission.count, count + 1
-    # users('one').destroy 
-    # assert_equal GroupPermission.count, count
-  end
   test 'should allow user to vote a vote proposal' do
-    users('one').votes.clear
+    user = create(:user)
     assert_difference 'Vote.count' do
-      users('one').vote(vote_proposals('two'),vote_proposal_options('one'))
+      proposal = create(:vote_proposal_with_2_options)
+      option = proposal.vote_proposal_options.first
+      user.vote(proposal, option)
     end
-  end  
-  test 'should create a User' do
-    assert users('one').persisted?
-  end
-  test 'should not create User with duplicate email' do
-    assert_not User.create(email: "test1@test.fi").valid?
-  end
-  test 'should have default status active' do
-    assert_equal users('one').status, "active"
-  end
-  test 'should return a fixed user with one vote' do
-    #assert users('one').votes.count > 0
-  end
-  test 'should return a fixed user with one vote proposal' do
-    #assert users('one').vote_proposals.count > 0
   end
   
+  test 'should create a User' do
+    assert create(:user).persisted?
+  end
+  
+  test 'should not create User with duplicate email' do
+    user1 = create(:user)
+    email = user1.email
+    user2 = build(:user, {email: email})
+    assert_not user2.valid?
+  end
+  
+  test 'should have default status active' do
+    assert_equal build(:user).status, "active"
+  end
 end
