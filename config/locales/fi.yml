@@ -1,12 +1,17 @@
 fi:
+  national: Kansallinen
   instruction: Ohje
   sign_in: Kirjaudu
   sign_out: Kirjaudu ulos
   direct_democracy: Suora demokratia
   routes:
     instruction: ohje
-    vote_proposals: ääniehdotukset
+    vote_proposals: äänestysehdotukset
+    vote_proposal: äänestysehdotus
+    votes: äänet
+    vote: ääni
     show: näytä
+    index: listaus
   activerecord:
     errors:
       models:

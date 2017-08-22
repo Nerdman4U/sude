@@ -5,6 +5,11 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'rails', '~> 5.1.0.rc1'
+gem 'sqlite3'
+gem 'puma', '~> 3.7'
+gem 'sass-rails', github: "rails/sass-rails"
+
 gem 'route_translator'
 gem 'devise'
 gem 'activeadmin'
@@ -12,15 +17,7 @@ gem 'will_paginate'
 gem 'redis-rails'
 gem 'redis-namespace'
 gem 'friendly_id', '~> 5.1.0'
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.0.rc1'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
-# Use Puma as the app server
-gem 'puma', '~> 3.7'
-# Use SCSS for stylesheets
-gem 'sass-rails', github: "rails/sass-rails"
+gem 'bootstrap', '~> 4.0.0.alpha6'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

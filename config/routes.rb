@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
 
   root to: redirect("/fi"), as: "root"
+  
   localized do
     get "/", to: 'vote_proposals#index', as: "vote_proposals"
-    # get "vote_proposals/show/:id/(:next)/(:prev)", to: "vote_proposals#show", as: "vote_proposal"
-    get "vote_proposals/show/:id", to: "vote_proposals#show", as: "vote_proposal"
+    get "/vote_proposals", to: 'vote_proposals#index'
+    get "/vote_proposals/:group_id", to: "vote_proposals#index", as: "vote_proposals_with_group"
+    get "/vote_proposals/show/:id", to: "vote_proposals#show", as: "vote_proposal"
     get '/instruction', to: "democracy#instruction", as: "instruction"
     get '/confirm', to: "democracy#confirm", as: "confirm"
     devise_for :users

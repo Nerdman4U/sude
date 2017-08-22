@@ -33,6 +33,10 @@ class VoteProposal < ApplicationRecord
     left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ?", user.id);
   }
 
+  scope :in_permitted_group, -> (user, group) {
+    left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ? and group_permissions.group_id = ?", user.id, group.id);
+  }
+  
   scope :global_or_permitted, -> (user) {
     global.includes(:votes) + in_permitted_groups(user).includes(:votes)
   }

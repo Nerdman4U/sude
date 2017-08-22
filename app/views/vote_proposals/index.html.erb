@@ -1,9 +1,26 @@
-<% content_for :header do %>
-  <%= render partial: "header" %>
-<% end %>
-  
 <!-- Main -->
 <div id="main" style="margin-top:2em">
+
+  <% css_class = ["nav-link"] %>
+  <% css_class << "active" if @group.blank? %>
+  <ul class="nav nav-tabs">
+    <li role="presentation" class="nav-item">
+      <a class="<%= css_class.join(' ') %>" href="<%= vote_proposals_path %>"><%= t("national") %></a>
+    </li>
+
+    <% @groups.each do |group| %>
+      <% css_class = ["nav-link"] %>
+      <% css_class << "active" if @group == group %>
+    <li role="presentation" class="nav-item">
+      <a class="<%= css_class.join(' ') %>" href="<%= vote_proposals_with_group_path(group) %>">
+        <%= group.name %>
+      </a>
+    </li>
+    <% end %>
+  </ul>
+
+  <br/>
+  
   <%= will_paginate @vote_proposals %>
   <div class="inner">
     <div class="columns">

@@ -2,9 +2,20 @@ class VoteProposalsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).global.paginate(:page => params[:page], :per_page => 10)
+    group_id = params[:group_id]
 
-   # {:vote_proposal_id => <VOTE>}
+    # TODO: CHECK PERMISSIONS
+    if group_id # group = current_or_guest_user.has_permission(group_id)
+      @group = Group.find(group_id)
+      @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).in_permitted_group(current_or_guest_user, @group).paginate(:page => params[:page], :per_page => 10)
+    else
+      @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).global.paginate(:page => params[:page], :per_page => 10)
+    
+    end
+
+    @groups = current_or_guest_user.groups
+
+    # {:vote_proposal_id => <VOTE>}
     @votes = {}
     # Add current_user vote to eah
     @vote_proposals.each do |vp|
