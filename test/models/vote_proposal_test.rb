@@ -15,10 +15,18 @@ class VoteProposalTest < ActiveSupport::TestCase
     # ActiveRecord::Base.connection.execute(query.to_sql)
   end
 
+  def setup
+    @user = create(:user_with_group_with_proposals)    
+  end
+
+  def teardown
+    DatabaseCleaner.clean
+  end
+
   test 'should return vote proposals in the groups user is' do
-    vps = VoteProposal.in_permitted_groups(users('one'))
-    assert_equal vps.count, 1
-    assert vps.first.groups.count > 0
+    vps = VoteProposal.in_permitted_groups(@user)
+    assert_equal vps.count, 3
+    assert vps.all? {|vp| vp.groups.count == 1 }
   end
 
   test 'should return global vote proposals' do
@@ -28,40 +36,53 @@ class VoteProposalTest < ActiveSupport::TestCase
   end
   
   test 'should return global proposals or proposals in the groups user is' do
-    vps = VoteProposal.global_or_permitted(users('one'))
-    assert_equal vps.count, 2
-    assert vps[1].groups.count > 0
+    vps = VoteProposal.global_or_permitted(@user)
+    assert_equal vps.count, 4
+
+    valid_groups = @user.groups
+    assert vps.all? {|vp|
+      vp.groups.blank? or vp.groups.any? {|group| valid_groups.include?(group)}
+    }
+    
   end
     
   test 'should find vote proposal with old and new slugged name' do
-    old_slug = vote_proposals('one').slug
-    vote_proposals('one').topic = "foobar"
-    vote_proposals('one').save
-    assert_equal vote_proposals('one').friendly_id, "ehdotus-1"
+    vote_proposal = create(:vote_proposal)
+    old_slug = vote_proposal.slug
+    vote_proposal.topic = "foobar"
+    vote_proposal.save
+    assert_equal vote_proposal.friendly_id, old_slug # old name works
 
-    vote_proposals('one').slug = nil
-    vote_proposals('one').save
-    assert_equal vote_proposals('one').friendly_id, "foobar"
+    old_slug = vote_proposal.slug
+    vote_proposal.slug = nil
+    vote_proposal.save
+    assert vote_proposal.friendly_id.match(/foobar/) # new name works after regeneration
 
     assert VoteProposal.friendly.find("foobar")
     assert VoteProposal.friendly.find(old_slug)       
   end
   test 'should create persisted vote_proposal object' do
-    assert vote_proposals('one').persisted?
+    vote_proposal = create(:vote_proposal)
+    assert vote_proposal.persisted?
   end
   test 'should have an array of users' do
-    assert vote_proposals('one').users.count > 0
+    #vote_proposal = create(:vote_proposal_with_users)
+    #assert vote_proposal.users.count > 0
   end
   test 'should have an array of votes' do
-    assert vote_proposals('one').votes.count > 0
+    vote_proposal = create(:vote_proposal_with_votes)
+    assert vote_proposal.votes.count > 0
   end
   test 'should have an array of groups' do
-    assert vote_proposals('one').groups.count > 0
+    vote_proposal = create(:vote_proposal_with_groups)
+    assert vote_proposal.groups.count > 0
   end
   test 'should have an array of vote_proposal_tags' do
-    assert vote_proposals('one').vote_proposal_tags.count > 0
+    vote_proposal = create(:vote_proposal_with_tags)
+    assert vote_proposal.vote_proposal_tags.count > 0
   end
   test 'should have an array of vote_proposal_options' do
-    assert vote_proposals('one').vote_proposal_options.count > 0
+    vote_proposal = create(:vote_proposal_with_options)
+    assert vote_proposal.vote_proposal_options.count > 0
   end
 end

@@ -65,7 +65,7 @@ class UserTest < ActiveSupport::TestCase
   test 'should allow user to vote a vote proposal' do
     user = create(:user)
     assert_difference 'Vote.count' do
-      proposal = create(:vote_proposal_with_2_options)
+      proposal = create(:vote_proposal_with_options)
       option = proposal.vote_proposal_options.first
       user.vote(proposal, option)
     end

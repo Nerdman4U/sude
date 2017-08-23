@@ -2,7 +2,7 @@ require 'test_helper'
 
 class VoteProposalOptionTest < ActiveSupport::TestCase
   test 'should not have | in the name' do
-    opt = vote_proposal_options('one')
+    opt = create(:vote_proposal_option)
     opt.name = "yeah"
     assert opt.valid?
     opt.name = "yeah|"
@@ -10,6 +10,6 @@ class VoteProposalOptionTest < ActiveSupport::TestCase
   end
     
   test 'should create persisted vote_proposal option object' do
-    assert vote_proposal_options('one').persisted?
+    assert create(:vote_proposal_option).persisted?
   end  
 end

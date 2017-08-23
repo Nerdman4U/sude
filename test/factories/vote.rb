@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :vote do
     user
-    vote_proposal    
+    association :vote_proposal, :with_options
   end
 end

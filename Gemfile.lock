@@ -8,14 +8,6 @@ GIT
       sprockets (~> 4.x)
       sprockets-rails (< 4.0)
 
-GIT
-  remote: https://github.com/thoughtbot/shoulda-matchers.git
-  revision: edaf9cb926ee9c59c59729e7a4f8c206b44da8a1
-  branch: rails-5
-  specs:
-    shoulda-matchers (3.1.2)
-      activesupport (>= 4.2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -335,7 +327,6 @@ DEPENDENCIES
   route_translator
   sass-rails!
   selenium-webdriver
-  shoulda-matchers!
   single_test
   spring
   spring-watcher-listen (~> 2.0.0)

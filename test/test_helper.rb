@@ -3,6 +3,7 @@ require 'rails/test_help'
 require 'capybara/rails'
 require 'capybara/minitest'
 require 'mocha/mini_test'
+require 'database_cleaner'
 
 class ActionDispatch::IntegrationTest
   # Make the Capybara DSL available in all integration tests

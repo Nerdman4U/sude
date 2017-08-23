@@ -45,7 +45,6 @@ group :test do
   gem 'mocha'
   gem 'factory_girl_rails'
   gem 'faker'
-  gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
   gem 'database_cleaner'
 end
 

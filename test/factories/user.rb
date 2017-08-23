@@ -13,6 +13,16 @@ FactoryGirl.define do
         create_list(:group, evaluator.groups_count, users: [user])
       end
     end
+
+    trait :with_group_with_proposals do
+      transient do
+        groups_count 1
+      end
+      after(:create) do |user, evaluator|
+        create_list(:group_with_proposals, evaluator.groups_count, users: [user])
+      end
+    end
+    
     
     trait :with_votes do
       transient do
@@ -26,5 +36,6 @@ FactoryGirl.define do
     factory :user_with_group, traits: [:with_group]
     factory :user_with_votes, traits: [:with_votes]
     factory :user_with_group_and_votes, traits: [:with_group, :with_votes]
+    factory :user_with_group_with_proposals, traits: [:with_group_with_proposals]
   end  
 end

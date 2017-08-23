@@ -7,39 +7,49 @@ class VoteTest < ActiveSupport::TestCase
   end
 
   test 'should not allow multiple votes for same user on proposal' do
-    proposal = votes('one').vote_proposal
-    user = votes('one').user
+    vote = create(:vote)
+    proposal = vote.vote_proposal
+    user = vote.user
 
-    assert votes('one').valid?
+    assert vote.valid?
     assert_no_difference 'Vote.count' do
+      opt = proposal.vote_proposal_options.first
       params = {
         vote_proposal: proposal,
         user: user,
-        vote_proposal_options: [vote_proposal_options('one')]
+        vote_proposal_options: [opt]
       }
       vote = Vote.create(params)
     end
-
   end
 
-  test 'should refactor update parametes' do
-    opt1 = vote_proposal_options('one')
-    opt2 = vote_proposal_options('two')
-    vote = users('one').votes.first
-    assert_equal vote.vote_proposal_options.count, 1
-    assert_equal vote.vote_proposal_options.first.name, "no"
+  # TODO: maybe should rename "refactor_params" to modify_params.
+  test 'should refactor (Vote#refactor_params!) update parametes' do
+    opt1 = create(:vote_proposal_option)
+    opt2 = create(:vote_proposal_option)
+    user = create(:user_with_votes)
+    vote = user.votes.first
+    vote.vote_proposal_options << vote.vote_proposal.vote_proposal_options
+    assert_equal vote.vote_proposal_options.count, 2
     params = {
       "vote_proposal_option_ids" => [{id: opt2.id}]
     }
+
     vote.refactor_params! params
     assert_equal params["vote_proposal_option_ids"].count, 1
     assert_equal params["vote_proposal_option_ids"].first[:id], opt2.id
   end
   
   test 'should refactor update parameters when proposal max_options is 2' do    
+    opt1 = create(:vote_proposal_option)
+    opt2 = create(:vote_proposal_option)
+    user = create(:user_with_votes)
+    vote = user.votes.first
+    vote.vote_proposal_options << vote.vote_proposal.vote_proposal_options
+    
     vote.vote_proposal.update_attributes({max_options: 2})
     params = {
-      "vote_proposal_option_ids" => [{id: opt2.id}]
+      "vote_proposal_option_ids" => [{id: opt2.id},{id: opt1.id}]
     }
     vote.refactor_params! params
     assert_equal params["vote_proposal_option_ids"].count, 2
