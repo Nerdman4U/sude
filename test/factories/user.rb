@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryGirl.define do  
   factory :user do
-    fullname { [Faker::Name.first_name, Faker::Name.last_name].join(" ") }
+    fullname { [Faker::Name.first_name, Faker::Name.unique.last_name].join(" ") }
     email { Faker::Internet.safe_email(fullname) }
     username { Faker::Internet.user_name(fullname) }
     password { "password" }
@@ -22,14 +22,26 @@ FactoryGirl.define do
         create_list(:group_with_proposals, evaluator.groups_count, users: [user])
       end
     end
-    
-    
+
+    # It seems easier at this point to create votes in test explicitely.
+    # user = create(:user)
+    # proposal = create(:vote_proposal_with_votes)
+    # user.vote(proposal, proposal.vote_proposal_options.first)
     trait :with_votes do
       transient do
         votes_count 3
       end
       after(:create) do |user, evaluator|
         create_list(:vote, evaluator.votes_count, user: user)
+      end
+    end
+
+    trait :with_proposals do
+      transient do
+        proposal_count 3
+      end
+      after(:create) do |user, evaluator|
+        create_list(:vote_proposal_with_options, evaluator.proposal_count, users: [user])
       end
     end
 

@@ -1,8 +1,8 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  def setup
-    GroupPermission.delete_all
+  def teardown
+    DatabaseCleaner.clean
   end
 
   test 'should remove jointable record when user is removed' do

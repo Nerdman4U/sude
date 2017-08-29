@@ -1,5 +1,6 @@
 fi:
-  national: Kansallinen
+  generic: Yleinen
+  Talking Circle: Puhepiiri
   instruction: Ohje
   sign_in: Kirjaudu
   sign_out: Kirjaudu ulos
@@ -12,6 +13,8 @@ fi:
     vote: ääni
     show: näytä
     index: listaus
+    settings: asetukset
+    history: historia
   activerecord:
     errors:
       models:

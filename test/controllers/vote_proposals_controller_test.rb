@@ -2,6 +2,10 @@ require 'test_helper'
 
 class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
 
+  def teardown
+    DatabaseCleaner.clean
+  end
+
   test 'should get index with group id' do
     group = create(:group)
     get vote_proposals_with_group_url group_id: group.id
@@ -9,6 +13,7 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should set proposal ids to session' do
+    proposal = create(:vote_proposal)
     get vote_proposals_url
     handler = controller.send(:session_handler)
     list = handler.get(:proposals)
@@ -26,6 +31,7 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
   test 'should get next proposal id from session' do
     proposal = create(:vote_proposal)
     get vote_proposals_url
+    handler = controller.send(:session_handler)
     get vote_proposal_url(proposal)
     assert controller.send(:next_proposal_from_session)   
   end

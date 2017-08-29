@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :group do
-    name { Faker::Company.name }
+    name { Faker::Company.unique.name }
 
     trait :with_proposals do
       transient do

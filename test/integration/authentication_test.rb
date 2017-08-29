@@ -14,7 +14,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   end
 
   test 'should not find login link if signed in' do
-    sign_in users(:one)
+    sign_in create(:user)
     visit("/en")
     assert_raise do
       find_link('Sign in')

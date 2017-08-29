@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170810054005) do
+ActiveRecord::Schema.define(version: 20170829071513) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -41,6 +41,15 @@ ActiveRecord::Schema.define(version: 20170810054005) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "circles", force: :cascade do |t|
+    t.string "name"
+    t.integer "group_id"
+    t.integer "parent_id"
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -80,6 +89,17 @@ ActiveRecord::Schema.define(version: 20170810054005) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_groups_on_name", unique: true
+  end
+
+  create_table "user_histories", force: :cascade do |t|
+    t.integer "vote_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_user_histories", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "user_history_id"
   end
 
   create_table "user_vote_proposals", force: :cascade do |t|
@@ -153,6 +173,7 @@ ActiveRecord::Schema.define(version: 20170810054005) do
     t.integer "anonymous_vote_count"
     t.integer "confirmed_vote_count"
     t.string "slug"
+    t.integer "circle_id"
   end
 
   create_table "vote_vote_proposal_options", force: :cascade do |t|

@@ -1,0 +1,22 @@
+<div id="preview">
+  <div class="inner">
+    <div class="content">
+      <h1><%= t("History") %></h1>  
+      <article>
+        <header>
+          <h2><%= t("Activity") %></h2>
+          <table>
+            <tr><th>Proposal</th><th>Voted</th><th>Date</th></tr>
+            <% current_or_guest_user.user_histories.each do |history| %>
+            <tr>
+              <td><%= history.vote.vote_proposal.topic %></td>
+              <td><%= history.vote.vote_proposal_options.map(&:name).join(", ") %></td>
+              <td><%= history.created_at.localtime %></td>
+            </tr>
+            <% end %>
+          </table>
+        </header>
+      </article>
+    </div>
+  </div>
+</div>

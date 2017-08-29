@@ -1,8 +1,10 @@
 FactoryGirl.define do
+  sequence(:topic) { |n| "#{Faker::Food.dish} #{n}" }
   factory :vote_proposal do
-    topic "Ehdotus 1"
+    topic
     max_options 1
     min_options 1
+    association :circle
     
     trait :with_options do
       transient do

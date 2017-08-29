@@ -81,7 +81,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :set_locale
-
+  
+  helper_method :current_or_guest_user
+  
   # Guest user code from:
   # https://github.com/plataformatec/devise/wiki/How-To:-Create-a-guest-user
   #

@@ -3,6 +3,7 @@ class Vote < ApplicationRecord
   belongs_to :vote_proposal
   has_many :vote_vote_proposal_options
   has_many :vote_proposal_options, through: :vote_vote_proposal_options
+  has_many :user_histories
 
   validates :user, :vote_proposal, presence: true
   validate :vote_proposal_options_must_be_found_at_proposal
@@ -42,7 +43,7 @@ class Vote < ApplicationRecord
   # Later, this could be done so that in show view vote is saved only
   # after user loads different action. In show update_attributes are
   # building a <tt>new record</tt> and thus validation can occur later.
-  def refactor_params! params
+  def modify_params! params
     max = vote_proposal.max_options
     if params["vote_proposal_option_ids"]
       opt_ids = vote_proposal_options.map(&:id)
@@ -61,7 +62,16 @@ class Vote < ApplicationRecord
 
   def defaults_before_save
     self.selected_options = build_selected_options
-    update_proposal_counter_cache if self.valid?
+    
+    if self.valid?
+      update_proposal_counter_cache 
+      add_user_history
+    end
+    
+  end
+
+  def add_user_history
+    self.user_histories << UserHistory.new(vote: self, users: [self.user])
   end
 
   # Update counter cache column in vote proposal. Anonymous users have

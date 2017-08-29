@@ -35,7 +35,7 @@ class VotesController < ApplicationController
                         user_id: current_or_guest_user.id
                       }).first
 
-    vote.refactor_params! vote_params
+    vote.modify_params! vote_params
     vote.update_attributes vote_params
     
     redirect_back(fallback_location: vote_proposal_path(vote.vote_proposal))

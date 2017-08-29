@@ -15,31 +15,32 @@ class VoteProposalTest < ActiveSupport::TestCase
     # ActiveRecord::Base.connection.execute(query.to_sql)
   end
 
-  def setup
-    @user = create(:user_with_group_with_proposals)    
-  end
-
   def teardown
     DatabaseCleaner.clean
   end
 
   test 'should return vote proposals in the groups user is' do
-    vps = VoteProposal.in_permitted_groups(@user)
+    group = create(:group, :with_proposals)
+    user = create(:user)
+    user.groups << group
+    vps = VoteProposal.in_permitted_groups(user)
     assert_equal vps.count, 3
     assert vps.all? {|vp| vp.groups.count == 1 }
   end
 
   test 'should return global vote proposals' do
+    proposal = create(:vote_proposal)
     vps = VoteProposal.global.to_a
     assert_equal vps.count, 1
-    assert_equal vps.first.topic, "Ehdotus 3"
   end
   
   test 'should return global proposals or proposals in the groups user is' do
-    vps = VoteProposal.global_or_permitted(@user)
+    proposal = create(:vote_proposal)
+    user = create(:user_with_group_with_proposals)
+    vps = VoteProposal.global_or_permitted(user)
     assert_equal vps.count, 4
 
-    valid_groups = @user.groups
+    valid_groups = user.groups
     assert vps.all? {|vp|
       vp.groups.blank? or vp.groups.any? {|group| valid_groups.include?(group)}
     }

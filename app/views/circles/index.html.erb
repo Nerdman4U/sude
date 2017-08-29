@@ -1,0 +1,35 @@
+<div id="preview" >
+  <div class="inner">
+    <div class="image fit">
+      <img src="" alt="" />
+    </div>
+    <div class="content">
+      <article>
+      <header>
+	<h2><%= t("Circles") %></h2>
+      </header>
+      <p>
+        Listaus olemassa olevista keskustelupiireistä sekä mahdollisuus lisätä uusi
+      </p>
+      <p>
+        Alkuun ohje jossa lyhyt referointi ja linkit:
+        <br/>
+        - Sosiokratiaan<br/>
+        - Puhepiireihin<br/>
+        - Piirin lisäämissääntöihin</br>
+        - Äänestysehdotuksen lisäämissääntöihin (tärkein)<br/>
+        
+      </p>
+      </article>
+
+      <article>
+        <%= form_for :circle do |f| %>
+        Name: <%= f.text_field :name %><br />
+        <%= f.submit %>
+        <% end %>
+      </article>
+      
+    </div>
+  </div>
+</div>
+                    

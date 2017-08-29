@@ -12,6 +12,9 @@ class VoteProposal < ApplicationRecord
   has_many :vote_proposal_tags, -> {distinct}, through: :vote_proposal_vote_proposal_tags
   has_many :vote_proposal_vote_proposal_options
   has_many :vote_proposal_options, -> {distinct}, through: :vote_proposal_vote_proposal_options
+  belongs_to :circle, inverse_of: :vote_proposals
+
+  validates :topic, uniqueness: true
 
 
   scope :global_arel, -> {

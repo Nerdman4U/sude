@@ -5,7 +5,7 @@
   <% css_class << "active" if @group.blank? %>
   <ul class="nav nav-tabs">
     <li role="presentation" class="nav-item">
-      <a class="<%= css_class.join(' ') %>" href="<%= vote_proposals_path %>"><%= t("national") %></a>
+      <a class="<%= css_class.join(' ') %>" href="<%= vote_proposals_path %>"><%= t("generic") %></a>
     </li>
 
     <% @groups.each do |group| %>

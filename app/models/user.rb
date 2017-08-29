@@ -8,6 +8,9 @@ class User < ApplicationRecord
   has_many :vote_proposals, through: :user_vote_proposals
   has_many :group_permissions
   has_many :groups, -> {distinct}, through: :group_permissions
+  has_many :user_user_histories
+  has_many :user_histories, through: :user_user_histories
+  
   enum status: [:active, :disabled, :removed]
 
   # todo: maybe we could have a scope to retrieve all groups with permissions where user belongs
@@ -30,7 +33,7 @@ class User < ApplicationRecord
   # This method does the voting
   #
   # Params: proposal  VoteProposal object
-  #         values    An array of VoteProposalOption objects
+  #         values    An array of VoteProposalOption objects or a single record
   # Returns: Vote object (valid or not)
   #
   def vote proposal, values
@@ -46,11 +49,12 @@ class User < ApplicationRecord
     
     values = [values] if values.is_a?(VoteProposalOption)
     # values = values.filter.map {|v| !v.is_a?(VoteProposal)}
-    Vote.create({
-                  user: self,
-                  vote_proposal: proposal,
-                  vote_proposal_options: values
-                })
+    vote = Vote.create({
+                         user: self,
+                         vote_proposal: proposal,
+                         vote_proposal_options: values
+                       })
+    vote
   end
 
   def permission group

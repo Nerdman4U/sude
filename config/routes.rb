@@ -4,9 +4,14 @@ Rails.application.routes.draw do
   
   localized do
     get "/", to: 'vote_proposals#index', as: "vote_proposals"
+    get "/circles", to: 'circles#index', as: "circles"
+    post "/circles", to: "circles#create", as: "create_circle"
+    get "/circles/:circle_id", to:"circles#show", as: "circle"
     get "/vote_proposals", to: 'vote_proposals#index'
     get "/vote_proposals/:group_id", to: "vote_proposals#index", as: "vote_proposals_with_group"
     get "/vote_proposals/show/:id", to: "vote_proposals#show", as: "vote_proposal"
+    get '/user/:id/settings', to: "users#settings", as: "settings"
+    get '/user/:id/history', to: "users#history", as: "history"
     get '/instruction', to: "democracy#instruction", as: "instruction"
     get '/confirm', to: "democracy#confirm", as: "confirm"
     devise_for :users
