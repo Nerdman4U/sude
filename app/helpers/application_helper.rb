@@ -1,6 +1,15 @@
 # coding: utf-8
 module ApplicationHelper
 
+  # Return an array of select tag html options for to select groups.
+  #
+  # Todo: generic version i.e. select_options(records, key)
+  def group_options groups
+    opts = [["No group", nil]]
+    opts << groups.map {|group| [group.name, group.id]}.flatten
+    opts
+  end
+
   def show_header?
     !!session[:header_shown] or user_signed_in?
   end

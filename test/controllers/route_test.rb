@@ -3,20 +3,24 @@ require 'test_helper'
 
 class RouteTest < ActionDispatch::IntegrationTest
 
+  test 'should route new vote proposal' do
+    assert_generates "fi/#{CGI.escape('äänestysehdotukset')}/1/uusi", controller: "vote_proposals", action: "new", locale: "fi", circle_id: 1
+  end
+
   test 'should route circles' do
-    assert_generates "/fi/circles", controller: "circles", action: "index", locale: "fi"
-    assert_recognizes({controller: "circles", action: "create", locale: "fi"},{path: "/fi/circles", method: "post"})
-    assert_generates "/fi/circles/1", controller:"circles", action:"show", locale:"fi", circle_id:1
+    assert_generates "/fi/puhepiirit", controller: "circles", action: "index", locale: "fi"
+    assert_recognizes({controller: "circles", action: "create", locale: "fi"},{path: "/fi/puhepiirit", method: "post"})
+    assert_generates "/fi/puhepiirit/1", controller:"circles", action:"show", locale:"fi", circle_id:1
   end
 
   test 'should route history' do
-    assert_generates "/fi/user/1/historia", controller: "users", action: "history", locale: "fi", id: 1
-    assert_generates "/en/user/1/history", controller: "users", action: "history", locale: "en", id: 1
+    assert_generates "/fi/user/historia", controller: "users", action: "history", locale: "fi"
+    assert_generates "/en/user/history", controller: "users", action: "history", locale: "en"
   end
   
   test 'should route settings' do
-    assert_generates "/fi/user/1/asetukset", controller: "users", action: "settings", locale: "fi", id: 1
-    assert_generates "/en/user/1/settings", controller: "users", action: "settings", locale: "en", id: 1
+    assert_generates "/fi/user/asetukset", controller: "users", action: "settings", locale: "fi"
+    assert_generates "/en/user/settings", controller: "users", action: "settings", locale: "en"
   end
 
   test 'should route root' do

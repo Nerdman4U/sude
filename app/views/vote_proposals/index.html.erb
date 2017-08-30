@@ -27,14 +27,6 @@
 
       <% @vote_proposals.each do |vp| %>
         <div class="image fit">        
-<%
-   p_ind= @vote_proposals.index(vp) - 1 
-   n_ind = @vote_proposals.index(vp) + 1
-   p_ind = p_ind < 0 ? 0 : p_ind
-   n_ind = n_ind > (@vote_proposals.size - 1) ? (@vote_proposals.size - 1) : n_ind
-   n_vp = @vote_proposals[n_ind]
-   p_vp = @vote_proposals[p_ind]
-%>
           <article style="border:1px dotted #ddd; padding: 8px;">
             <header><%= link_to vp.topic, vote_proposal_path(vp) %></header>
             <table>

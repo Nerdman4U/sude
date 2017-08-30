@@ -18,6 +18,12 @@ class User < ApplicationRecord
 
   after_initialize :defaults_for_new
 
+  def cached_groups
+    Rails.cache.fetch("Cached-groups-for-the-user-#{username}", expires_in: 12.hours) do
+      groups
+    end
+  end
+
   def vote_in_proposal proposal
     votes.includes(:vote_proposal).select {|vote| vote.vote_proposal == proposal}.first
   end

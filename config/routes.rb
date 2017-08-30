@@ -10,8 +10,9 @@ Rails.application.routes.draw do
     get "/vote_proposals", to: 'vote_proposals#index'
     get "/vote_proposals/:group_id", to: "vote_proposals#index", as: "vote_proposals_with_group"
     get "/vote_proposals/show/:id", to: "vote_proposals#show", as: "vote_proposal"
-    get '/user/:id/settings', to: "users#settings", as: "settings"
-    get '/user/:id/history', to: "users#history", as: "history"
+    get "/vote_proposals/:circle_id/new", to: "vote_proposals#new", as: "new_vote_proposal"
+    get '/user/settings', to: "users#settings", as: "settings"
+    get '/user/history', to: "users#history", as: "history"
     get '/instruction', to: "democracy#instruction", as: "instruction"
     get '/confirm', to: "democracy#confirm", as: "confirm"
     devise_for :users

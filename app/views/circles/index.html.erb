@@ -1,35 +1,63 @@
-<div id="preview" >
+<div id="preview">
   <div class="inner">
-    <div class="image fit">
-      <img src="" alt="" />
-    </div>
     <div class="content">
       <article>
-      <header>
-	<h2><%= t("Circles") %></h2>
-      </header>
-      <p>
-        Listaus olemassa olevista keskustelupiireistä sekä mahdollisuus lisätä uusi
-      </p>
-      <p>
-        Alkuun ohje jossa lyhyt referointi ja linkit:
-        <br/>
-        - Sosiokratiaan<br/>
-        - Puhepiireihin<br/>
-        - Piirin lisäämissääntöihin</br>
-        - Äänestysehdotuksen lisäämissääntöihin (tärkein)<br/>
-        
-      </p>
+        <header>
+	  <h2><%= t("Talking circles") %></h2>
+        </header>
+        <p>
+          Listaus olemassa olevista keskustelupiireistä sekä mahdollisuus lisätä uusi
+        </p>
+        <p>
+          Alkuun ohje jossa lyhyt referointi ja linkit:
+          <br/>
+          - Sosiokratiaan<br/>
+          - Puhepiireihin<br/>
+          - Piirin lisäämissääntöihin</br>
+          - Äänestysehdotuksen lisäämissääntöihin (tärkein)<br/>        
+        </p>
       </article>
-
-      <article>
-        <%= form_for :circle do |f| %>
-        Name: <%= f.text_field :name %><br />
-        <%= f.submit %>
+    </div class="content">
+    
+    <article>
+      <%= will_paginate @circles %>
+      <div class="columns">
+        <% @circles.each do |circle| %>
+        <div class="image fit">
+          <article style="border:1px dotted #ddd; padding: 8px;">
+            <header><%= link_to circle.name, circle_path(circle) %></header>
+          </article>
+        </div>
         <% end %>
-      </article>
-      
-    </div>
+      </div>
+    </article>
+
+    <hr/>
+
+    <article>
+      <h2><%= t("Add new talking circle") %></h2>
+      - Puhepiirien lisääminen täytyy olla hallittua<br/>
+      - Esim. voi lisätä piirin ryhmään tietyn "maineen" (pisteytys) saavutettuaan<br/>
+      - Esim. piirin aktivoimiseksi tietty määrä kannattajia<br/>
+      <br/>
+      <%= form_for :circle do |f| %>
+      <div class="form-group row">
+        <label for="name" class="col-sm-2 col-form-label"><%= t("Name") %></label>
+        <div class="col-sm-10">
+          <%= f.text_field :name, type:"text", id:"name", class: "form-control mb-2 mr-sm-2 mb-sm-0" %>
+        </div>
+      </div>       
+      <div class="form-group row">
+        <label for="group" class="col-sm-2 col-form-label"><%= t("Group") %></label>
+        <div class="col-sm-10">
+          <%= f.select(:group_id, group_options(@groups), class: "form-control mb-2 mr-sm-2 mb-sm-0") %>
+        </div>
+      </div>
+      <%= f.submit %>
+      <% end %>
+    </article>
+    
   </div>
 </div>
-                    
+</div>
+
