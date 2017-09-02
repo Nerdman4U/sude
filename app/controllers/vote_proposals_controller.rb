@@ -7,7 +7,7 @@ class VoteProposalsController < ApplicationController
     if proposal.valid?
       proposal.save
       flash[:notice] = t("Vote proposal has been added")
-      redirect_to vote_proposal_url(proposal)
+      redirect_to vote_proposal_path(proposal)
     else
       redirect_to circles_path
     end

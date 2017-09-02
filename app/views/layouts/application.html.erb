@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= t(:direct_democracy) %></title>
+    <title><%= t(:direct_democracy) %> - <%= yield(:title) %></title>
     <%= csrf_meta_tags %>
 
     <% if params[:controller] == "admin" %>
@@ -24,12 +24,8 @@
 
   <body data-turbolinks="false">
     <%= flash_messages if !flash.empty? %>
-
     <%= render(partial: "header") %>
-
     <%= yield %>
-
     <%= render(partial: "footer") %>
-    
   </body>
 </html>

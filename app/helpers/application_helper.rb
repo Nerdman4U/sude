@@ -29,10 +29,7 @@ module ApplicationHelper
       html += link_to("", instruction_path, class: "fa fa-info-circle fa-3x icon", title: "Ohje")
     end
 
-    valid = ["vote_proposals#show","democracy#instruction"]
-    unless valid.index("#{params[:controller]}\##{params[:action]}").nil?
-      html += link_to("", vote_proposals_path, class: "fa fa-list fa-3x icon", "data-turbolinks": false, title: "Takaisin listaukseen")
-    end
+    html += link_to("", vote_proposals_path, class: "fa fa-list fa-3x icon", "data-turbolinks": false, title: "Takaisin listaukseen")
     
     html += '<a href="#" class="fa fa-close fa-3x icon button-action" title="Sulje"></a>'.html_safe
   end

@@ -2,10 +2,15 @@ fi:
   Vote proposal has been added: Äänestysehdotus on lisätty
   generic: Yleinen
   Talking Circle: Puhepiiri
+  Talking Circles: Puhepiirit
   instruction: Ohje
   sign_in: Kirjaudu
   sign_out: Kirjaudu ulos
   direct_democracy: Suora demokratia
+  settings: asetukset
+  Settings: Asetukset
+  History: Historia
+  Home: Etusivu
   routes:
     instruction: ohje
     vote_proposals: äänestysehdotukset
@@ -18,6 +23,7 @@ fi:
     history: historia
     circles: puhepiirit
     new: uusi
+    user: käyttäjä
   activerecord:
     errors:
       models:

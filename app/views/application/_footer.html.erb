@@ -2,10 +2,12 @@
   <a href="#" class="info fa fa-info-circle"><span></span></a>
   <div class="inner">
     <div class="content">
-      <h3>suorademokratia.net palvelua ylläpitää Suomen Demokratia ry.</h3>
+      <h3>Suorademokratia.net palvelua ylläpitää Suomen Demokratia ry.</h3>
       <%= show_header_buttons %>
-      <%= link_to t("historia"), history_path(current_or_guest_user) %>
-      <%= link_to t("puhepiirit"), circles_path %>
+      <%= link_to t("Home"), root_path %>
+      <%= link_to t("History"), history_path %>
+      <%= link_to t("Settings"), settings_path %>
+      <%= link_to t("Talking Circles"), circles_path %>
     </div>
     <div class="copyright">
       <h3>Follow us</h3>
