@@ -1,9 +1,36 @@
 require 'test_helper'
 
 class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
-
+  include Devise::Test::IntegrationHelpers
+  
   def teardown
     DatabaseCleaner.clean
+  end
+
+  test 'should create proposal' do
+    user = create(:user)
+    sign_in user
+    circle = create(:circle)
+    assert_difference "VoteProposal.count" do      
+      post create_vote_proposal_url(vote_proposal: {topic:"foobar1", description:"asdf", circle_id:circle.id})
+    end
+    assert_redirected_to vote_proposals_path(VoteProposal.last)
+
+    opt1 = create(:vote_proposal_option)
+    opt2 = create(:vote_proposal_option)
+    assert_difference "VoteProposal.count" do      
+      post create_vote_proposal_url(vote_proposal: {topic:"foobar2", description:"asdf", circle_id:circle.id, vote_proposal_option_ids: [opt1.id, opt2.id]})
+    end
+    assert_redirected_to vote_proposals_path(VoteProposal.last)
+    assert_equal VoteProposal.last.vote_proposal_options.size, 2
+  end
+
+  test 'get new vote proposal with a circle' do
+    user = create(:user)
+    sign_in user
+    circle = create(:circle)
+    get new_vote_proposal_url(circle)
+    assert_response :success
   end
 
   test 'should get index with group id' do

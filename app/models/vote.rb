@@ -11,11 +11,9 @@ class Vote < ApplicationRecord
 
   before_save :defaults_before_save
   
-  accepts_nested_attributes_for :vote_proposal_options,
-                                allow_destroy: true
+  accepts_nested_attributes_for :vote_proposal_options, allow_destroy: true
 
   scope :with_options, -> () { joins(:vote_proposal_options) }
-
   
   # NOTE: This is too heavy validation.
   #

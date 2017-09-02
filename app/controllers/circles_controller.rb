@@ -17,9 +17,9 @@ class CirclesController < ApplicationController
 
     if circle.valid?
       circle.save
+      flash[:success] = t("Circle has been added")
       redirect_to circle_path(circle.id)
     else
-      # flash[:error] <= kuinkas default error
       redirect_to circles_path
     end
   end

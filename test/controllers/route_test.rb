@@ -3,6 +3,10 @@ require 'test_helper'
 
 class RouteTest < ActionDispatch::IntegrationTest
 
+  test 'should route create vote proposal' do
+    assert_recognizes({controller:"vote_proposals", action:"create", locale:"fi"},{path:"/fi/#{CGI.escape('äänestysehdotukset')}", method:"post"})
+  end
+
   test 'should route new vote proposal' do
     assert_generates "fi/#{CGI.escape('äänestysehdotukset')}/1/uusi", controller: "vote_proposals", action: "new", locale: "fi", circle_id: 1
   end

@@ -2,6 +2,20 @@ require 'test_helper'
 
 class VoteProposalTest < ActiveSupport::TestCase
 
+  def teardown
+    DatabaseCleaner.clean
+  end
+
+  test 'should associate vote proposal options with nested params' do
+    circle = create(:circle)
+    opt1 = create(:vote_proposal_option)
+    opt2 = create(:vote_proposal_option)
+    params = {topic: "foo", description: "bar", vote_proposal_option_ids: [opt1.id, opt2.id], circle: circle}
+    proposal = VoteProposal.create(params)
+    assert proposal.valid?
+    assert_equal proposal.vote_proposal_options.size, 2
+  end
+
   # Is it possible to return all items in one query?
   #
   # - VoteProposals without groups (global)
@@ -15,10 +29,6 @@ class VoteProposalTest < ActiveSupport::TestCase
     # ActiveRecord::Base.connection.execute(query.to_sql)
   end
 
-  def teardown
-    DatabaseCleaner.clean
-  end
-
   test 'should return vote proposals in the groups user is' do
     group = create(:group, :with_proposals)
     user = create(:user)
@@ -26,10 +36,20 @@ class VoteProposalTest < ActiveSupport::TestCase
     vps = VoteProposal.in_permitted_groups(user)
     assert_equal vps.count, 3
     assert vps.all? {|vp| vp.groups.count == 1 }
+    
+    # Unpublished VoteProposal should not be listed
+    proposal = create(:vote_proposal, published_at: nil, groups: [group])
+    vps = VoteProposal.in_permitted_groups(user)
+    assert_equal vps.count, 3
   end
 
   test 'should return global vote proposals' do
     proposal = create(:vote_proposal)
+    vps = VoteProposal.global.to_a
+    assert_equal vps.count, 1
+
+    # Unpublished VoteProposal should not be listed
+    proposal = create(:vote_proposal, published_at: nil)
     vps = VoteProposal.global.to_a
     assert_equal vps.count, 1
   end
@@ -43,8 +63,7 @@ class VoteProposalTest < ActiveSupport::TestCase
     valid_groups = user.groups
     assert vps.all? {|vp|
       vp.groups.blank? or vp.groups.any? {|group| valid_groups.include?(group)}
-    }
-    
+    }    
   end
     
   test 'should find vote proposal with old and new slugged name' do
@@ -62,6 +81,7 @@ class VoteProposalTest < ActiveSupport::TestCase
     assert VoteProposal.friendly.find("foobar")
     assert VoteProposal.friendly.find(old_slug)       
   end
+  
   test 'should create persisted vote_proposal object' do
     vote_proposal = create(:vote_proposal)
     assert vote_proposal.persisted?

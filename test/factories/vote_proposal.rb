@@ -4,6 +4,7 @@ FactoryGirl.define do
     topic
     max_options 1
     min_options 1
+    published_at Time.now - 1.week
     association :circle
     
     trait :with_options do

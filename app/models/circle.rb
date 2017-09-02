@@ -3,4 +3,6 @@ class Circle < ApplicationRecord
   has_one :circle, :class_name => "Circle", inverse_of: :parent
   belongs_to :group, required: false, inverse_of: :circles
   has_many :vote_proposals, inverse_of: :circle
+
+  validates :name, uniqueness: true
 end

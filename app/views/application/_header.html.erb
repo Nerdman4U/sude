@@ -1,13 +1,15 @@
 <p style="position:absolute;right:0;width:50px;z-index:20002">
   <%= query_diet_widget if Rails.env.development? %>
 </p>
-<header id="header" class="<%= header_class %>">
+<header id="header" class="hide">
   <div class="inner">
     <div class="content">
       <h1><%= t("direct_democracy") %></h1>
       <h2></h2>
       <%= show_header_buttons %>
     </div>
-    <a href="<%= vote_proposals_path %>" class="button button-action hidden"><span>Let's Go</span></a>
+    <a href="<%= vote_proposals_path %>" class="button button-action hidden">
+      <span>Let's Go</span>
+    </a>
   </div>
 </header>

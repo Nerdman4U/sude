@@ -1,10 +1,27 @@
 class VoteProposalsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
+  def create
+    proposal_params = params.require(:vote_proposal).permit(:topic, :description, :circle_id, vote_proposal_option_ids: [])
+    proposal = VoteProposal.new(proposal_params)
+    if proposal.valid?
+      proposal.save
+      flash[:notice] = t("Vote proposal has been added")
+      redirect_to vote_proposal_url(proposal)
+    else
+      redirect_to circles_path
+    end
+  end
+
+  def new
+    circle_id = params[:circle_id]
+    @circle = Circle.find(circle_id)    
+  end
+
+  # TODO: CHECK PERMISSIONS
   def index
     group_id = params[:group_id]
 
-    # TODO: CHECK PERMISSIONS
     if group_id # group = current_or_guest_user.has_permission(group_id)
       @group = Group.find(group_id)
       @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).in_permitted_group(current_or_guest_user, @group).paginate(:page => params[:page], :per_page => 10)
@@ -53,20 +70,24 @@ class VoteProposalsController < ApplicationController
   def next_proposal_from_session
     ids = proposal_ids_from_session
     current = current_proposal_from_session
-    return unless ids
     return unless ids.is_a? Array
+    return if ids.blank?
     return unless current
-    next_id = ids.index(current) + 1
+    current_ind = ids.index(current)
+    return if current_ind.blank?
+    next_id = current_ind + 1
     next_id = 0 if next_id >= ids.count 
     VoteProposal.find(ids[next_id]) rescue nil
   end
   def previous_proposal_from_session
     ids = proposal_ids_from_session
     current = current_proposal_from_session
-    return unless ids
     return unless ids.is_a? Array
+    return if ids.blank?
     return unless current
-    prev_id = ids.index(current) - 1
+    current_ind = ids.index(current)
+    return if current_ind.blank?
+    prev_id = current_ind - 1
     prev_id = ids.count-1 if prev_id < 0
     VoteProposal.find(ids[prev_id]) rescue nil
   end

@@ -16,7 +16,9 @@ class VoteProposal < ApplicationRecord
 
   validates :topic, uniqueness: true
 
+  accepts_nested_attributes_for :vote_proposal_options, allow_destroy: true
 
+  # NOTE: this is a test
   scope :global_arel, -> {
     proposals = Arel::Table.new(:vote_proposals)
     group_vote_proposals = Arel::Table.new(:group_vote_proposals)
@@ -29,15 +31,15 @@ class VoteProposal < ApplicationRecord
   }
 
   scope :global, -> {
-    all_with_groups.having("count(groups.id) = 0")
+    all_with_groups.having("count(groups.id) = 0 AND published_at < ?", Time.now)
   }
 
   scope :in_permitted_groups, -> (user) {
-    left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ?", user.id);
+    left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ? AND published_at < ?", user.id, Time.now);
   }
 
   scope :in_permitted_group, -> (user, group) {
-    left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ? and group_permissions.group_id = ?", user.id, group.id);
+    left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ? and group_permissions.group_id = ? AND published_at < ?", user.id, group.id, Time.now);
   }
   
   scope :global_or_permitted, -> (user) {
