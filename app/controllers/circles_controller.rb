@@ -8,7 +8,11 @@ class CirclesController < ApplicationController
   def show
     circle_id = params.require(:circle_id)
     @circle = Circle.find(circle_id)
-    @vote_proposals = @circle.vote_proposals.paginate(:page => params[:page], :per_page => 10)
+
+    par_pub = {:page => params[:published_page], :per_page => 10}
+    par_unpub = {:page => params[:unpublished_page], :per_page => 10}
+    @vote_proposals_published = @circle.vote_proposals.published.paginate(par_pub)
+    @vote_proposals_unpublished = @circle.vote_proposals.unpublished.paginate(par_unpub)
   end
 
   def create

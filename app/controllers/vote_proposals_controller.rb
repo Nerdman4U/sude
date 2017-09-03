@@ -43,20 +43,41 @@ class VoteProposalsController < ApplicationController
     session_handler.set(:proposals, @vote_proposals.map(&:id))
   end
 
-  def show
-    if !params[:id] || params[:id].to_i < 0
+  def preview
+    record_id = params.require(:id)    
+    if record_id.blank?
       redirect_to :root
       return
     end
 
-    @current = VoteProposal.friendly.find(params[:id])
-    session_handler.set([:proposals, :current], @current.id)
-    
-    @next = next_proposal_from_session
-    @prev = previous_proposal_from_session
-    if current_or_guest_user
-      @vote = current_or_guest_user.votes.where(vote_proposal_id: @current.id).first
+    @options = VoteProposalOption.preview_options
+    @current = VoteProposal.friendly.find(record_id)
+
+    if @current.published?
+      redirect_to vote_proposal_path(@current)
+      return
     end
+    
+    @vote = current_or_guest_user.votes.where(vote_proposal_id: @current.id).first
+
+    preview_votes = @current.votes.where(status: "preview")
+    @accept_count = preview_votes.where(selected_options: "Accept").count
+    @decline_count = preview_votes.where(selected_options: "Decline").count
+  end
+  
+  def show
+    record_id = params.require(:id)    
+    if record_id.blank?
+      redirect_to :root
+      return
+    end
+
+    @current = VoteProposal.friendly.find(record_id)
+    @vote = current_or_guest_user.votes.where(vote_proposal_id: @current.id).first
+    
+    session_handler.set([:proposals, :current], @current.id)    
+    @next = next_proposal_from_session
+    @prev = previous_proposal_from_session    
   end
 
   private

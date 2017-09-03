@@ -50,7 +50,14 @@ class UserTest < ActiveSupport::TestCase
   test 'should return true if the user has voted this proposal' do
     user = create(:user_with_votes)
     proposal = user.votes.first.vote_proposal
-    user.has_voted?(proposal)
+    assert user.has_voted?(proposal)
+
+    # should not return true if user has voted preview
+    user.votes.each do |vote|
+      vote.update_attributes({status: "preview"})
+    end
+    assert_not user.has_voted?(proposal)    
+    assert user.has_voted?(proposal, "preview")
   end
 
   test 'should return the vote this user has in given vote proposal' do
@@ -91,14 +98,31 @@ class UserTest < ActiveSupport::TestCase
     assert_equal perm.acl, "rwx"    
   end
 
-  test 'should allow user to vote a vote proposal' do
-    user = create(:user)
-    assert_difference 'Vote.count' do
-      proposal = create(:vote_proposal_with_options)
-      option = proposal.vote_proposal_options.first
-      user.vote(proposal, option)
-    end
-  end
+  # NOTE: This are deprecated due to use of nested_attributes.
+  #
+  # test 'should allow user to preview vote unpublished vote proposal' do
+  #   user = create(:user)
+  #   assert_difference 'Vote.count' do
+  #     proposal = create(:vote_proposal_with_options, published_at: nil)
+  #     user.preview_vote(proposal, "Accept")
+  #   end
+  #   assert_equal Vote.last.status, "preview"
+
+  #   # Should not allow preview vote with wrong name
+  #   assert_no_difference 'Vote.count' do
+  #     proposal = create(:vote_proposal_with_options, published_at: nil)
+  #     user.preview_vote(proposal, "Yes")
+  #   end
+  # end
+  
+  # test 'should allow user to vote a vote proposal' do
+  #   user = create(:user)
+  #   assert_difference 'Vote.count' do
+  #     proposal = create(:vote_proposal_with_options)
+  #     option = proposal.vote_proposal_options.first
+  #     user.vote(proposal, option)
+  #   end
+  # end
   
   test 'should create a User' do
     assert create(:user).persisted?

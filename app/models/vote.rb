@@ -1,6 +1,6 @@
 class Vote < ApplicationRecord
-  belongs_to :user, :inverse_of => :votes
-  belongs_to :vote_proposal
+  belongs_to :user, inverse_of: :votes
+  belongs_to :vote_proposal, inverse_of: :votes
   has_many :vote_vote_proposal_options
   has_many :vote_proposal_options, through: :vote_vote_proposal_options
   has_many :user_histories
@@ -14,19 +14,6 @@ class Vote < ApplicationRecord
   accepts_nested_attributes_for :vote_proposal_options, allow_destroy: true
 
   scope :with_options, -> () { joins(:vote_proposal_options) }
-  
-  # NOTE: This is too heavy validation.
-  #
-  # User cannot have more than one vote per vote_proposal.
-  #
-  def user_can_have_only_one_vote_per_proposal
-    if Vote.any? { |vote|
-         vote.user_id == user_id && vote.vote_proposal_id == vote_proposal_id && vote.id != id
-       }
-      errors.add(:base,
-                 "There can be only one vote in proposal for user")
-    end
-  end
   
   # Modify parameters for update attributes method.
   #
@@ -42,7 +29,7 @@ class Vote < ApplicationRecord
   # after user loads different action. In show update_attributes are
   # building a <tt>new record</tt> and thus validation can occur later.
   def modify_params! params
-    max = vote_proposal.max_options
+    max = vote_proposal.max_options || 1
     if params["vote_proposal_option_ids"]
       opt_ids = vote_proposal_options.map(&:id)
       return if max <= opt_ids.count
@@ -58,6 +45,9 @@ class Vote < ApplicationRecord
     end
   end
 
+  private
+
+  # TODO: Voting cache should also remove vote counts if changed option
   def defaults_before_save
     self.selected_options = build_selected_options
     
@@ -68,6 +58,19 @@ class Vote < ApplicationRecord
     
   end
 
+  # NOTE: This is too heavy validation.
+  #
+  # User cannot have more than one vote per vote_proposal.
+  #
+  def user_can_have_only_one_vote_per_proposal
+    if Vote.any? { |vote|
+         vote.user_id == user_id && vote.vote_proposal_id == vote_proposal_id && vote.id != id
+       }
+      errors.add(:base,
+                 "There can be only one vote in proposal for user")
+    end
+  end
+  
   def add_user_history
     self.user_histories << UserHistory.new(vote: self, users: [self.user])
   end
@@ -80,6 +83,8 @@ class Vote < ApplicationRecord
   # TODO: Why we are adding counter cache for every OPTION?
   def update_proposal_counter_cache
     return unless new_record?
+    return unless status.blank?
+    return unless vote_proposal.published_at < Time.now
 
     vote_proposal_options.each do |option|
       record = vote_proposal.find_counter_cache_record(option)
@@ -110,11 +115,21 @@ class Vote < ApplicationRecord
   
   # Returns true if selected vote options are found from proposal.
   #
+  # Note: Vote which is "preview" must allow accept and decline options
+  # even they are not found from proposal. Preview votes are used for
+  # acceptance of unpublished vote proposal.
   def verify_vote_proposal_options
     return true unless vote_proposal_options
-    correct_options = vote_proposal.vote_proposal_options.map(&:name)
+    if status == "preview"
+      correct_options = vote_proposal.vote_proposal_options.map(&:name)
+      correct_options << "Accept"
+      correct_options << "Decline"
+    else
+      correct_options = vote_proposal.vote_proposal_options.map(&:name)
+    end
+
     vote_proposal_options.all? do |option|
       correct_options.index(option.name)
-    end
+    end    
   end
 end

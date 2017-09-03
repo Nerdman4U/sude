@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get "/vote_proposals", to: 'vote_proposals#index'
     get "/vote_proposals/:group_id", to: "vote_proposals#index", as: "vote_proposals_with_group"
     get "/vote_proposals/show/:id", to: "vote_proposals#show", as: "vote_proposal"
+    get "/vote_proposals/preview/:id", to: "vote_proposals#preview", as: "preview_vote_proposal"
     get "/vote_proposals/:circle_id/new", to: "vote_proposals#new", as: "new_vote_proposal"
     post "/vote_proposals/", to:"vote_proposals#create", as:"create_vote_proposal"
     get '/user/settings', to: "users#settings", as: "settings"

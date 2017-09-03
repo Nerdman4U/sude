@@ -24,6 +24,7 @@ fi:
     circles: puhepiirit
     new: uusi
     user: käyttäjä
+    preview: esikatselu
   activerecord:
     errors:
       models:

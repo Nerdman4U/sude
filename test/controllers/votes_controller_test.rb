@@ -56,9 +56,10 @@ class VotesControllerTest < ActionDispatch::IntegrationTest
 
     sign_in user
     put update_vote_path(vote), params: par
-
+    
     vote.reload
     assert vote.vote_proposal_options.blank?
+    assert_not vote.selected_options.match(option.name)
   end
 
   test 'should route root url to default locale index' do

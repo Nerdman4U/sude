@@ -6,6 +6,7 @@ class VoteProposal < ApplicationRecord
   has_many :user_vote_proposals
   has_many :users, -> {distinct}, through: :user_vote_proposals
   has_many :votes
+  has_many :preview_votes
   has_many :group_vote_proposals
   has_many :groups, -> {distinct}, through: :group_vote_proposals
   has_many :vote_proposal_vote_proposal_tags
@@ -18,14 +19,17 @@ class VoteProposal < ApplicationRecord
 
   accepts_nested_attributes_for :vote_proposal_options, allow_destroy: true
 
-  # NOTE: this is a test
-  scope :global_arel, -> {
-    proposals = Arel::Table.new(:vote_proposals)
-    group_vote_proposals = Arel::Table.new(:group_vote_proposals)
-    proposals.join(group_vote_proposals).on(group_vote_proposals[:vote_proposals_id].eq(proposals[:id]))
-    # proposals.join(group_vote_proposals, Arel::Nodes::OuterJoin).on(group_vote_proposals[:vote_proposal_id].eq(group_vote_proposals[:group_id]))
+  after_initialize :defaults_for_new
+  after_save :check_publication_status
+
+  scope :published, -> {
+    where("published_at < ?", Time.now)
   }
-  
+
+  scope :unpublished, -> {
+    where("published_at > ? OR published_at IS NULL", Time.now)
+  }
+
   scope :all_with_groups, -> {
     left_joins(:groups).group("vote_proposals.id")
   }
@@ -50,8 +54,14 @@ class VoteProposal < ApplicationRecord
   scope :permitted_with_sql, -> (user) {
     find_by_sql('SELECT vote_proposals.id, groups.id FROM "vote_proposals" LEFT JOIN "group_vote_proposals" ON "group_vote_proposals"."vote_proposal_id" = "vote_proposals"."id" LEFT JOIN "groups" ON groups.id = group_vote_proposals.group_id LEFT JOIN "group_permissions" ON "group_permissions.group_id" = "groups.id" WHERE group_permissions.user_id = 980190962') 
   }
-  
-
+  # NOTE: this is a test
+  scope :global_arel, -> {
+    proposals = Arel::Table.new(:vote_proposals)
+    group_vote_proposals = Arel::Table.new(:group_vote_proposals)
+    proposals.join(group_vote_proposals).on(group_vote_proposals[:vote_proposals_id].eq(proposals[:id]))
+    # proposals.join(group_vote_proposals, Arel::Nodes::OuterJoin).on(group_vote_proposals[:vote_proposal_id].eq(group_vote_proposals[:group_id]))
+  }
+   
   # Find join table for vote proposal option.
   #
   # It is expected that this method is called after querying records
@@ -67,5 +77,20 @@ class VoteProposal < ApplicationRecord
     }.first
   end
 
+  def defaults_for_new
+    max_options = 1 if max_options.blank?
+    min_options = 1 if min_options.blank?
+  end
+
+  def published?
+    !!(published_at and published_at < Time.now)
+  end
+
+  # VoteProposal is published after it has two accept votes.
+  def check_publication_status
+    if votes.where(status: "preview", selected_options: "Accept").size > 1
+      update_column(:published_at, Time.now)
+    end
+  end
   
 end

@@ -28,39 +28,16 @@ class User < ApplicationRecord
     votes.includes(:vote_proposal).select {|vote| vote.vote_proposal == proposal}.first
   end
 
-  def has_voted? proposal
-    votes.any? {|vote| vote.vote_proposal == proposal}
+  # Status is used when voting should a vote proposal be
+  # published. Status "preview" is used when voting unpublished
+  # proposal. Status nil is used when voting real published proposal. 
+  def has_voted? proposal, status=nil
+    votes.any? { |vote| vote.vote_proposal == proposal and vote.status == status }
   end
 
+  # NOTE: Validated user (who has paid through web bank) has status 1.
   def defaults_for_new
     self.status = 0
-  end
-
-  # This method does the voting
-  #
-  # Params: proposal  VoteProposal object
-  #         values    An array of VoteProposalOption objects or a single record
-  # Returns: Vote object (valid or not)
-  #
-  def vote proposal, values
-    # check that user has permission for this proposal (!)
-    return unless proposal
-    return unless proposal.is_a?(VoteProposal)
-    return if values.blank?
-
-    if has_voted? proposal
-      Rails.logger.error("User (#{id} #{username}) has already voted this proposal (#{proposal.id} #{proposal.topic})")
-      return
-    end
-    
-    values = [values] if values.is_a?(VoteProposalOption)
-    # values = values.filter.map {|v| !v.is_a?(VoteProposal)}
-    vote = Vote.create({
-                         user: self,
-                         vote_proposal: proposal,
-                         vote_proposal_options: values
-                       })
-    vote
   end
 
   def permission group
@@ -108,7 +85,62 @@ class User < ApplicationRecord
   def remove_permissions group
     modify_permission(group, "") { |perm| "" }
   end
-  
+
+
+  # NOTE: Below methods are unused. Voting is done with nested_parameters
+  #
+  # # Vote an unpublished proposal.
+  # #
+  # # When proposal gets enough (currently 2 or more) Accept- votes it
+  # # will be published.
+  # #
+  # # TODO: check that user has permission for this proposal (!)
+  # def preview_vote proposal, value
+  #   return unless proposal
+  #   return unless proposal.is_a?(VoteProposal)
+  #   return unless ["Accept","Decline"].include?(value)
+  #   return if has_voted?(proposal, "preview")
+    
+  #   option = VoteProposalOption.where(name: value).first ||
+  #            VoteProposalOption.create(name: value)
+  #   this_vote = vote proposal, option, "preview"
+
+  #   proposal.send(:check_publication_status)
+  #   this_vote
+  # end
+
+  # # This method does the voting
+  # #
+  # # Params: proposal  VoteProposal object
+  # #         values    An array of VoteProposalOption objects or a single
+  # #                   record
+  # #         status    nil == normal vote
+  # #                   "preview" == vote for unpublished previewed vote
+  # # Returns: Vote object (valid or not)
+  # #
+  # # check that user has permission for this proposal (!)
+  # def vote proposal, values, status=nil
+  #   return unless proposal
+  #   return unless proposal.is_a?(VoteProposal)
+  #   return if values.blank?
+
+  #   if has_voted? proposal
+  #     Rails.logger.error("User (#{id} #{username}) has already voted this proposal (#{proposal.id} #{proposal.topic})")
+  #     return
+  #   end
+    
+  #   values = [values] if values.is_a?(VoteProposalOption)
+  #   # values = values.filter.map {|v| !v.is_a?(VoteProposal)}
+  #   vote = Vote.create({
+  #                        user: self,
+  #                        vote_proposal: proposal,
+  #                        vote_proposal_options: values,
+  #                        status: status
+  #                      })
+  #   vote
+  # end
+
+
 end
 
 

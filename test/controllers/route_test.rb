@@ -3,6 +3,11 @@ require 'test_helper'
 
 class RouteTest < ActionDispatch::IntegrationTest
 
+  #get /vote_proposals/:circle_id/:proposal_id/show
+  test 'should get proposal in circle context' do
+    assert_generates "fi/#{CGI.escape('äänestysehdotukset')}/esikatselu/1", controller: "vote_proposals", action: "preview", locale: "fi", id: 1
+  end
+
   test 'should route create vote proposal' do
     assert_recognizes({controller:"vote_proposals", action:"create", locale:"fi"},{path:"/fi/#{CGI.escape('äänestysehdotukset')}", method:"post"})
   end
@@ -18,12 +23,12 @@ class RouteTest < ActionDispatch::IntegrationTest
   end
 
   test 'should route history' do
-    assert_generates "/fi/user/historia", controller: "users", action: "history", locale: "fi"
+    assert_generates "/fi/#{CGI.escape('käyttäjä')}/historia", controller: "users", action: "history", locale: "fi"
     assert_generates "/en/user/history", controller: "users", action: "history", locale: "en"
   end
   
   test 'should route settings' do
-    assert_generates "/fi/user/asetukset", controller: "users", action: "settings", locale: "fi"
+    assert_generates "/fi/#{CGI.escape('käyttäjä')}/asetukset", controller: "users", action: "settings", locale: "fi"
     assert_generates "/en/user/settings", controller: "users", action: "settings", locale: "en"
   end
 

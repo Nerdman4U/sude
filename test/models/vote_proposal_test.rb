@@ -6,6 +6,34 @@ class VoteProposalTest < ActiveSupport::TestCase
     DatabaseCleaner.clean
   end
 
+  test 'should publish proposal after enough voting' do
+    vp = create(:vote_proposal, published_at: nil)
+    user = create(:user)
+    vote = user.preview_vote(vp, "Accept")
+    assert_equal vote.vote_proposal_options.size, 1
+    assert_equal vp.votes.size, 1
+    user = create(:user)
+    user.preview_vote(vp, "Accept")
+    assert_equal vp.votes.size, 2
+    assert vp.published_at.present?
+    assert vp.published_at > Time.now - 3.seconds    
+  end
+
+  test 'should return published proposals' do
+    vp = create(:vote_proposal, topic: "unpublished", published_at: nil)
+    vp = create(:vote_proposal, topic: "published")
+    vps = VoteProposal.published
+    assert_equal vps.size, 1
+    assert_equal vps.first.topic, "published"
+
+    vps = VoteProposal.unpublished
+    assert_equal vps.size, 1
+    assert_equal vps.first.topic, "unpublished"
+  end
+
+  test 'should publish proposal when it has three supporters' do
+  end
+
   test 'should associate vote proposal options with nested params' do
     circle = create(:circle)
     opt1 = create(:vote_proposal_option)

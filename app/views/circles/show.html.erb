@@ -67,11 +67,27 @@
     </div>
 
     <div class="content">
+      <h2><%= t("Vote proposals in this talking circle") %></h2>
+      
       <article>
-        <h2><%= t("Vote proposals in this talking circle") %></h2>
-        <%= will_paginate @vote_proposals %>
+        <h3><%= t("Unpublished") %></h3>
+        <%= will_paginate @vote_proposals_unpublished, param_name: "unpublished_page" %>
         <div class="columns">
-          <% @vote_proposals.each do |vp| %>
+          <% @vote_proposals_unpublished.each do |vp| %>
+          <div class="image fit">        
+            <article style="border:1px dotted #ddd; padding: 8px;">
+              <header><%= link_to vp.topic, preview_vote_proposal_path(vp) %></header>
+            </article>
+          </div>
+          <% end %>
+        </div>
+      </article>
+      
+      <article>
+        <h3><%= t("Published") %></h3>
+        <%= will_paginate @vote_proposals_published, param_name: "published_page" %>
+        <div class="columns">
+          <% @vote_proposals_published.each do |vp| %>
           <div class="image fit">        
             <article style="border:1px dotted #ddd; padding: 8px;">
               <header><%= link_to vp.topic, vote_proposal_path(vp) %></header>

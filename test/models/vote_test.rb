@@ -138,15 +138,26 @@ class VoteTest < ActiveSupport::TestCase
     assert_equal vote.build_selected_options, vote.selected_options
   end
   
-  test 'should raise if option is not found from proposal' do
+  test 'should raise error if option is not found from proposal' do
     vote = create(:vote)
-    vote.vote_proposal_options.clear
-    
+    vote.vote_proposal_options.clear    
     proposal = vote.vote_proposal
     correct_options = proposal.vote_proposal_options
 
     vote.vote_proposal_options << @wrong_option
     assert_not vote.valid?
+  end
+
+  test 'should not raise error if vote status is preview and options are correct' do
+    # However, if vote status is "preview" accept and decline options
+    # should be allowed 
+    vote = create(:vote, status: "preview")
+    vote.vote_proposal_options.clear
+    opt1 = VoteProposalOption.create(name: "Accept")
+    opt2 = VoteProposalOption.create(name: "Decline")
+    vote.vote_proposal_options << opt1
+    vote.vote_proposal_options << opt2
+    assert vote.valid?
   end
   
   test 'should add an option if it is found from proposal' do

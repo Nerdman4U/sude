@@ -10,24 +10,69 @@ This is simple Direct Democracy software.
 4) Rake test
 5) Rails server
 
-## Models
+## See the demo
+http://suorademokratia.net
 
-### Users
+## Contribute!
+
+We need your help. Please, see the list below and feel free to get excited
+
+I will write here stuff i know needs to be written better.
+
+### Permissions
+
+    Most permission checks are missing.
+
+    For example at:
+    User#vote
+
+### Search queries
+
+    Should install search engine for efficient searches, for example solr
+    https://github.com/sunspot/sunspot               
+
+### FactoryGirl
+
+    Some factories could be more complex.
+
+    see: factories/vote.rb
+
+### VoteProposalsController#index
+
+   Too many queries. Should have SQL query to include all related data
+   in one query.
+
+### Vote.rb
+
+   Validation of the vote count is too heavy
+   (user_can_have_only_one_vote_per_proposal)
+
+### Acceptance tests (Capybara/Selenium)
+
+   Only few tests written.. should have more
+
+
+
+## Technical
+
+### Models
+
+#### Users
 User can be anonymous, signed up but unverified or
 verified. Verification is done with checkout.fi API. Verified user must
 succesfully use web bank mmoney transfer.
 
-### VoteProposal
+#### VoteProposal
 A record that can be voted.
 
-### Vote
+#### Vote
 A vote for one proposal.
 
-### Group
+#### Group
 Vote proposal can be generic or it can have a group. Vote proposals in
 groups are accessible only users who are members of the groups.  
 
-### Circles
+#### Circles
 Vote proposals are added to the system through group of people, "talking
 circle". This means that multiple people will be involved to create
 content and multiple people must accept the final proposal to make it
@@ -46,29 +91,6 @@ With "single_test" gem spesific tests can be ran easily
 $ rake test:user                 (model)
 $ rake test:user:should          (model test with regexp)
 $ rake test:vote:proposals       (functional)
-
-## Contributing
-
-I will write here stuff i know needs to be written better.
-
-1) FactoryGirl
-   How to add factory to create assosiated record from another
-   associated record previously created?
-
-   Can i do something like:
-   vote = create(:vote_with_proposal, user: user)
-   see vote.rb
-
-2) VoteProposalsController#index
-   Too many queries. Should have SQL query to include all related data
-   in one query.
-
-3) Vote.rb
-   Validation of the vote count is too heavy
-   (user_can_have_only_one_vote_per_proposal)
-
-4) Acceptance tests (Capybara/Selenium)
-   Only few tests written.. should have more
 
 
 ## Versioning
