@@ -87,59 +87,62 @@ class User < ApplicationRecord
   end
 
 
+  # DEPRECATED METHODS BELOW
+  # ===========================================================================
   # NOTE: Below methods are unused. Voting is done with nested_parameters
   #
-  # # Vote an unpublished proposal.
-  # #
-  # # When proposal gets enough (currently 2 or more) Accept- votes it
-  # # will be published.
-  # #
-  # # TODO: check that user has permission for this proposal (!)
-  # def preview_vote proposal, value
-  #   return unless proposal
-  #   return unless proposal.is_a?(VoteProposal)
-  #   return unless ["Accept","Decline"].include?(value)
-  #   return if has_voted?(proposal, "preview")
+  # Vote an unpublished proposal.
+  #
+  # When proposal gets enough (currently 2 or more) Accept- votes it
+  # will be published.
+  #
+  # TODO: check that user has permission for this proposal (!)
+  def preview_vote proposal, value
+    return unless proposal
+    return unless proposal.is_a?(VoteProposal)
+    return unless ["Accept","Decline"].include?(value)
+    return if has_voted?(proposal, "preview")
     
-  #   option = VoteProposalOption.where(name: value).first ||
-  #            VoteProposalOption.create(name: value)
-  #   this_vote = vote proposal, option, "preview"
+    option = VoteProposalOption.where(name: value).first ||
+             VoteProposalOption.create(name: value)
+    this_vote = vote proposal, option, "preview"
 
-  #   proposal.send(:check_publication_status)
-  #   this_vote
-  # end
+    proposal.send(:check_publication_status)
+    this_vote
+  end
 
-  # # This method does the voting
-  # #
-  # # Params: proposal  VoteProposal object
-  # #         values    An array of VoteProposalOption objects or a single
-  # #                   record
-  # #         status    nil == normal vote
-  # #                   "preview" == vote for unpublished previewed vote
-  # # Returns: Vote object (valid or not)
-  # #
-  # # check that user has permission for this proposal (!)
-  # def vote proposal, values, status=nil
-  #   return unless proposal
-  #   return unless proposal.is_a?(VoteProposal)
-  #   return if values.blank?
+  # NOTE: Currently voting is done through nested attributes.
+  #
+  # Method for voting.
+  #
+  # Params: proposal  VoteProposal object
+  #         values    An array of VoteProposalOption objects or a single
+  #                   record
+  #         status    nil == normal vote
+  #                   "preview" == vote for unpublished previewed vote
+  # Returns: Vote object (valid or not)
+  #
+  # check that user has permission for this proposal (!)
+  def vote proposal, values, status=nil
+    return unless proposal
+    return unless proposal.is_a?(VoteProposal)
+    return if values.blank?
 
-  #   if has_voted? proposal
-  #     Rails.logger.error("User (#{id} #{username}) has already voted this proposal (#{proposal.id} #{proposal.topic})")
-  #     return
-  #   end
+    if has_voted? proposal
+      Rails.logger.error("User (#{id} #{username}) has already voted this proposal (#{proposal.id} #{proposal.topic})")
+      return
+    end
     
-  #   values = [values] if values.is_a?(VoteProposalOption)
-  #   # values = values.filter.map {|v| !v.is_a?(VoteProposal)}
-  #   vote = Vote.create({
-  #                        user: self,
-  #                        vote_proposal: proposal,
-  #                        vote_proposal_options: values,
-  #                        status: status
-  #                      })
-  #   vote
-  # end
-
+    values = [values] if values.is_a?(VoteProposalOption)
+    # values = values.filter.map {|v| !v.is_a?(VoteProposal)}
+    vote = Vote.create({
+                         user: self,
+                         vote_proposal: proposal,
+                         vote_proposal_options: values,
+                         status: status
+                       })
+    vote
+  end
 
 end
 

@@ -56,6 +56,7 @@ FactoryGirl.define do
     factory :vote_proposal_with_tags, traits: [:with_tags]
     factory :vote_proposal_with_groups, traits: [:with_groups]
     factory :vote_proposal_with_votes, traits: [:with_votes]
+    factory :vote_proposal_with_users, traits: [:with_users]
   end
 end
 

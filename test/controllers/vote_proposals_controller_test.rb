@@ -7,9 +7,12 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
     DatabaseCleaner.clean
   end
 
-  # Preview is used for to be able to publish unpublished vote_proposals
+  # Preview is used for to be able to vote for to publish unpublished
+  # vote_proposals.
   test 'should get preview' do
-    proposal = create(:vote_proposal)
+    user = create(:user)
+    sign_in user
+    proposal = create(:vote_proposal, published_at: nil)
     get preview_vote_proposal_url(proposal)
     assert_response :success
   end

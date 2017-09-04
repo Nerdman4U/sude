@@ -43,7 +43,8 @@ class VoteProposal < ApplicationRecord
   }
 
   scope :in_permitted_group, -> (user, group) {
-    left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ? and group_permissions.group_id = ? AND published_at < ?", user.id, group.id, Time.now);
+    # left_joins(:groups => [:group_permissions, :users]).where("group_permissions.user_id = ? and group_permissions.group_id = ? AND published_at < ?", user.id, group.id, Time.now);
+    joins(:groups => [:group_permissions]).where("group_permissions.user_id = ? and group_permissions.group_id = ? AND published_at < ?", user.id, group.id, Time.now);
   }
   
   scope :global_or_permitted, -> (user) {
@@ -62,28 +63,26 @@ class VoteProposal < ApplicationRecord
     # proposals.join(group_vote_proposals, Arel::Nodes::OuterJoin).on(group_vote_proposals[:vote_proposal_id].eq(group_vote_proposals[:group_id]))
   }
    
-  # Find join table for vote proposal option.
+  # Find the join table for given vote proposal option.
   #
-  # It is expected that this method is called after querying records
-  # with includes. Select wont trigger sql queries as where would.
+  # Params: option VoteProposalOption
   #
-  # params: option VoteProposalOption
-  #
-  # TODO: rename as "find_join_table_record" (?)
   def find_counter_cache_record option
-    # vote_proposal_vote_proposal_options.select(vote_proposal_option_id: option.id).first
-    vote_proposal_vote_proposal_options.select {|join_table|
-      join_table.vote_proposal_option_id == option.id
-    }.first
+    vote_proposal_vote_proposal_options.where(vote_proposal_option_id: option.id).first
   end
-
+  # def find_counter_cache_record2 option
+  #   vote_proposal_vote_proposal_options.select {|join_table|
+  #     join_table.vote_proposal_option_id == option.id
+  #   }.first
+  # end
+  
   def defaults_for_new
     max_options = 1 if max_options.blank?
     min_options = 1 if min_options.blank?
   end
 
   def published?
-    !!(published_at and published_at < Time.now)
+    !!(published_at and published_at < Time.now + 3.seconds)
   end
 
   # VoteProposal is published after it has two accept votes.

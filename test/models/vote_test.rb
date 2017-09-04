@@ -10,6 +10,39 @@ class VoteTest < ActiveSupport::TestCase
     DatabaseCleaner.clean
   end
 
+  test 'should modify counter cache record when vote is saved and options have been changed' do
+    vote = create(:vote)
+    proposal = vote.vote_proposal
+    opt1 = proposal.vote_proposal_options.first
+    
+    vote.vote_proposal_options << opt1
+    vote.save
+    rec = proposal.send(:find_counter_cache_record, opt1)
+    assert_equal rec.anonymous_vote_count, 1
+   
+    vote.vote_proposal_options.delete(opt1)
+    vote.save
+    rec = proposal.send(:find_counter_cache_record, opt1)
+    assert_equal rec.anonymous_vote_count, 0    
+  end
+
+  test 'should add to counter cache when option is added' do
+    vote = create(:vote)
+    proposal = vote.vote_proposal
+    opt1 = proposal.vote_proposal_options.first
+    
+    rec = proposal.send(:find_counter_cache_record, opt1)
+    assert_nil rec.anonymous_vote_count
+    
+    vote.send(:update_proposal_counter_cache, opt1, 1)
+    rec = proposal.send(:find_counter_cache_record, opt1)
+    assert_equal rec.anonymous_vote_count, 1
+
+    vote.send(:update_proposal_counter_cache, opt1, -1)
+    rec = proposal.send(:find_counter_cache_record, opt1)
+    assert_equal rec.anonymous_vote_count, 0
+  end
+  
   test 'should create user history when vote is created' do
     user = create(:user)
     proposal = create(:vote_proposal, :with_options)
@@ -135,7 +168,7 @@ class VoteTest < ActiveSupport::TestCase
     vote.vote_proposal_options.clear
     vote.vote_proposal_options << option
     vote.save
-    assert_equal vote.build_selected_options, vote.selected_options
+    assert_equal vote.send(:build_selected_options), vote.selected_options
   end
   
   test 'should raise error if option is not found from proposal' do
@@ -171,9 +204,9 @@ class VoteTest < ActiveSupport::TestCase
   
   test 'should verify vote proposal options' do
     vote = create(:vote)
-    assert vote.verify_vote_proposal_options
+    assert vote.send(:verify_vote_proposal_options)
     vote.vote_proposal_options << @wrong_option
-    assert_not vote.verify_vote_proposal_options
+    assert_not vote.send(:verify_vote_proposal_options)
   end
   
   

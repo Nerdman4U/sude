@@ -7,7 +7,7 @@ class VotesControllerTest < ActionDispatch::IntegrationTest
     DatabaseCleaner.clean
   end
   
-  test 'should create a vote' do
+  test 'should create a vote and update counters' do
     user = create(:user)
     proposal = create(:vote_proposal, :with_options)
     sign_in user
@@ -21,6 +21,8 @@ class VotesControllerTest < ActionDispatch::IntegrationTest
     vote = Vote.last
     assert_equal vote.vote_proposal_options.count, 1
     assert_equal vote.vote_proposal_options.first.name, proposal.vote_proposal_options.first.name
+    assert_equal vote.send(:counter_values)[0][:a], 1
+    assert_nil vote.send(:counter_values)[0][:c]
   end
 
   test 'should add multiple options to a vote' do

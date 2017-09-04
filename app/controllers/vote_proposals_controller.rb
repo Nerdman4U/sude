@@ -26,8 +26,7 @@ class VoteProposalsController < ApplicationController
       @group = Group.find(group_id)
       @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).in_permitted_group(current_or_guest_user, @group).paginate(:page => params[:page], :per_page => 10)
     else
-      @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).global.paginate(:page => params[:page], :per_page => 10)
-    
+      @vote_proposals = VoteProposal.includes({vote_proposal_vote_proposal_options: [:vote_proposal_option]}, :vote_proposal_options).global.paginate(:page => params[:page], :per_page => 10)    
     end
 
     @groups = current_or_guest_user.groups

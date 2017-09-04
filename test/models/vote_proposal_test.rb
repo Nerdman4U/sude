@@ -6,17 +6,12 @@ class VoteProposalTest < ActiveSupport::TestCase
     DatabaseCleaner.clean
   end
 
-  test 'should publish proposal after enough voting' do
-    vp = create(:vote_proposal, published_at: nil)
-    user = create(:user)
-    vote = user.preview_vote(vp, "Accept")
-    assert_equal vote.vote_proposal_options.size, 1
-    assert_equal vp.votes.size, 1
-    user = create(:user)
-    user.preview_vote(vp, "Accept")
-    assert_equal vp.votes.size, 2
-    assert vp.published_at.present?
-    assert vp.published_at > Time.now - 3.seconds    
+  test 'should find join table record for given vote proposal options' do
+    vp = create(:vote_proposal, :with_options)
+    opt1 = vp.vote_proposal_options.first
+    record = vp.find_counter_cache_record(opt1)
+    assert_equal record.vote_proposal, vp
+    assert_equal record.vote_proposal_option, opt1
   end
 
   test 'should return published proposals' do
@@ -52,7 +47,6 @@ class VoteProposalTest < ActiveSupport::TestCase
   # - Groups where user has access (vote_proposals.groups)
   #
   test 'should return global proposals or proposals in the groups user is with Arel' do
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
     # query = VoteProposal.global_arel
     # ActiveRecord::Base.connection.execute(query.to_sql)
   end
@@ -114,24 +108,45 @@ class VoteProposalTest < ActiveSupport::TestCase
     vote_proposal = create(:vote_proposal)
     assert vote_proposal.persisted?
   end
+
   test 'should have an array of users' do
-    #vote_proposal = create(:vote_proposal_with_users)
-    #assert vote_proposal.users.count > 0
+    vote_proposal = create(:vote_proposal_with_users)
+    assert vote_proposal.users.count > 0
   end
+
   test 'should have an array of votes' do
     vote_proposal = create(:vote_proposal_with_votes)
     assert vote_proposal.votes.count > 0
   end
+
   test 'should have an array of groups' do
     vote_proposal = create(:vote_proposal_with_groups)
     assert vote_proposal.groups.count > 0
   end
+
   test 'should have an array of vote_proposal_tags' do
     vote_proposal = create(:vote_proposal_with_tags)
     assert vote_proposal.vote_proposal_tags.count > 0
   end
+  
   test 'should have an array of vote_proposal_options' do
     vote_proposal = create(:vote_proposal_with_options)
     assert vote_proposal.vote_proposal_options.count > 0
   end
+
+  # NOTE: Publishing is done through nested attributes
+  #
+  # test 'should publish proposal after enough voting' do
+  #   vp = create(:vote_proposal, published_at: nil)
+  #   user = create(:user)
+  #   vote = user.preview_vote(vp, "Accept")
+  #   assert_equal vote.vote_proposal_options.size, 1
+  #   assert_equal vp.votes.size, 1
+  #   user = create(:user)
+  #   user.preview_vote(vp, "Accept")
+  #   assert_equal vp.votes.size, 2
+  #   assert vp.published_at.present?
+  #   assert vp.published_at > Time.now - 3.seconds    
+  # end
+  
 end

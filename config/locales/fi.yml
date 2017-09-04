@@ -11,6 +11,7 @@ fi:
   Settings: Asetukset
   History: Historia
   Home: Etusivu
+  Voting: Äänestys
   routes:
     instruction: ohje
     vote_proposals: äänestysehdotukset

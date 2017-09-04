@@ -2,7 +2,7 @@ class Vote < ApplicationRecord
   belongs_to :user, inverse_of: :votes
   belongs_to :vote_proposal, inverse_of: :votes
   has_many :vote_vote_proposal_options
-  has_many :vote_proposal_options, through: :vote_vote_proposal_options
+  has_many :vote_proposal_options, through: :vote_vote_proposal_options, after_add: :add_counter, after_remove: :sub_counter
   has_many :user_histories
 
   validates :user, :vote_proposal, presence: true
@@ -50,9 +50,8 @@ class Vote < ApplicationRecord
   # TODO: Voting cache should also remove vote counts if changed option
   def defaults_before_save
     self.selected_options = build_selected_options
-    
+
     if self.valid?
-      update_proposal_counter_cache 
       add_user_history
     end
     
@@ -75,31 +74,44 @@ class Vote < ApplicationRecord
     self.user_histories << UserHistory.new(vote: self, users: [self.user])
   end
 
-  # Update counter cache column in vote proposal. Anonymous users have
-  # different cache. 
-  # 
-  # Add counter only when creating new vote.
+  # Update counter cache columns in the join table.
   #
-  # TODO: Why we are adding counter cache for every OPTION?
-  def update_proposal_counter_cache
-    return unless new_record?
+  def update_proposal_counter_cache option, value
+    return unless valid?
     return unless status.blank?
-    return unless vote_proposal.published_at < Time.now
+    return unless vote_proposal.published?
 
-    vote_proposal_options.each do |option|
-      record = vote_proposal.find_counter_cache_record(option)
-      if user.confirmed?
-        count = record.confirmed_vote_count
-        count = count.blank? ? 1 : count + 1
-        record.update_column(:confirmed_vote_count, count)
-      else
-        count = record.anonymous_vote_count
-        count = count.blank? ? 1 : count + 1
-        record.update_column(:anonymous_vote_count, count)
-      end
-    end
+    record = vote_proposal.find_counter_cache_record(option)
+    if user.confirmed?
+      count = record.confirmed_vote_count || 0
+      count = count + value
+      record.update_column(:confirmed_vote_count, count)
+    else
+      count = record.anonymous_vote_count || 0
+      count = count + value
+      record.update_column(:anonymous_vote_count, count)
+    end    
+  end
+  
+  def add_counter(option)
+    return unless status.blank?
+    return unless vote_proposal.published?
+    update_proposal_counter_cache option, 1
+  end
+  
+  def sub_counter(option)
+    return unless status.blank?
+    return unless vote_proposal.published?
+    update_proposal_counter_cache option, -1
   end
 
+  def counter_values
+    vote_proposal_options.map do |option|
+      record = vote_proposal.find_counter_cache_record(option)
+      {id: id, a: record.anonymous_vote_count, c: record.confirmed_vote_count}
+    end
+  end
+  
   # Build a string for a column +selected_options+.
   #
   # This is a backup/debug solution at this time.

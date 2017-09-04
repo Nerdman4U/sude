@@ -6,7 +6,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'should return cached groups' do
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    #ActiveRecord::Base.logger = Logger.new(STDOUT)
     
     user = create(:user)
 
