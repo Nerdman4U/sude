@@ -15,6 +15,15 @@
  *= require_self
  */
 
+.user_history {
+  .add { color: green; }
+  .remove { color: red; }
+}
+
+.pagination a, .pagination em, .pagination span {
+  padding-right: 4px;
+}
+
 #header.hide .inner a.icon {
   display: none;
 }

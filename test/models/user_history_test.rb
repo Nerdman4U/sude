@@ -6,8 +6,19 @@ class UserHistoryTest < ActiveSupport::TestCase
     DatabaseCleaner.clean
   end
 
-  test 'should associate vote to user history' do
+  test 'should update selected_options after adding a vote' do
     vote = create(:vote)
+    vote.vote_proposal_options << vote.vote_proposal.vote_proposal_options.first
+    history = vote.user_histories.first
+    assert_equal vote.user_histories.count, 1
+    assert_equal history.selected_options, vote.selected_options
+    assert_equal history.selected_action, "add"
+  end
+
+  test 'should associate vote to user history' do
+    user = create(:user)
+    proposal = create(:vote_proposal, :with_options)
+    vote = create(:vote, user: user, vote_proposal: proposal, vote_proposal_options: [proposal.vote_proposal_options.first])
     assert_equal vote.user_histories.count, 1
     
     history = create(:user_history, vote: vote)
@@ -20,8 +31,11 @@ class UserHistoryTest < ActiveSupport::TestCase
   end
 
   test 'should associate users to user history' do
-    vote = create(:vote)
-
+    user = create(:user)
+    proposal = create(:vote_proposal, :with_options)
+    vote = create(:vote, user: user, vote_proposal: proposal, vote_proposal_options: [proposal.vote_proposal_options.first])
+    assert_equal vote.user_histories.count, 1
+    
     user = create(:user)
     history = create(:user_history, vote: vote)
     user.user_histories << history

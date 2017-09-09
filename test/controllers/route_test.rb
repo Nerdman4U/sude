@@ -3,6 +3,11 @@ require 'test_helper'
 
 class RouteTest < ActionDispatch::IntegrationTest
 
+  test 'should route give and remove mandate' do
+    assert_generates "/en/user/give_mandate/2", controller: "users", action: "give_mandate", locale: "en", mandate_to_id: 2
+    assert_generates "/en/user/remove_mandate/2", controller: "users", action: "remove_mandate", locale: "en", mandate_from_id: 2
+  end
+
   #get /vote_proposals/:circle_id/:proposal_id/show
   test 'should get proposal in circle context' do
     assert_generates "fi/#{CGI.escape('äänestysehdotukset')}/esikatselu/1", controller: "vote_proposals", action: "preview", locale: "fi", id: 1

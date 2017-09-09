@@ -25,7 +25,7 @@
                par = { vote: { vote_proposal_option_ids: [option.id] } }
              end 
           %>
-          <%= link_to option.name, update_vote_path(@vote, par), remote: true, method: :put, class: "#{css_class}" %>          
+          <%= link_to option.name, update_vote_path(@vote, par), remote: false, method: :put, class: "#{css_class}" %>          
           <% else %>
             <% par = {
                vote: {
@@ -34,7 +34,7 @@
                }
              }
           %>
-          <%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}" %>
+          <%= link_to option.name, create_vote_path(par), remote: false, method: :post, class: "#{css_class}" %>
           <% end %>
           <div>
             <table style="font-size:small">

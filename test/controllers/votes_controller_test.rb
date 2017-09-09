@@ -28,27 +28,32 @@ class VotesControllerTest < ActionDispatch::IntegrationTest
   test 'should add multiple options to a vote' do
     proposal = create(:vote_proposal, :with_options)
     user = create(:user)
-    vote = user.vote(proposal, proposal.vote_proposal_options.first)
+    sign_in user
+
+    # vote for option1
+    votes = user.vote(proposal, proposal.vote_proposal_options.first)
+    assert_equal votes.size, 1
+    assert_equal user.votes.size, 1
+    vote = votes.first
+    
     proposal.update_attributes(max_options: 2)    
     assert_equal vote.vote_proposal_options.count, 1
     assert_equal vote.vote_proposal.max_options, 2
     
+    # vote for option2
     par = {
       vote: {
         vote_proposal_option_ids: [proposal.vote_proposal_options[1].id]
       }
     }
-
-    sign_in user
     put update_vote_path(vote), params: par
-
     assert_equal vote.vote_proposal_options.count, 2
   end
 
   test 'should remove vote proposal option from a vote' do
     proposal = create(:vote_proposal, :with_options)
     user = create(:user)
-    vote = user.vote(proposal, proposal.vote_proposal_options.first)
+    vote = user.vote(proposal, proposal.vote_proposal_options.first).first
     option = vote.vote_proposal_options.first
     par = {
       vote: {

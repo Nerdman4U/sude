@@ -32,7 +32,7 @@ FactoryGirl.define do
         votes_count 3
       end
       after(:create) do |user, evaluator|
-        create_list(:vote, evaluator.votes_count, user: user)
+        create_list(:vote, evaluator.votes_count, user: user, voted_by: user)
       end
     end
 

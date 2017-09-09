@@ -20,7 +20,7 @@ module ApplicationHelper
     session[:header_shown] = 1
     if user_signed_in?
       html = link_to("", destroy_user_session_path, method: :delete, class: "fa fa-sign-out fa-3x icon", "data-turbolinks": false, title: "Kirjaudu ulos")
-      html += '<a href="#" class="fa fa-child fa-3x icon button-action" title="Asetukset"></a>'.html_safe
+      html += link_to("", settings_path, class: "fa fa-child fa-3x icon")
       if !current_user.confirmed?
         html += link_to("", confirm_path, class: "fa fa-paw fa-3x icon", title: "Vahvista tunnus")
       end

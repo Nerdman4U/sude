@@ -20,7 +20,7 @@ class VoteProposal < ApplicationRecord
   accepts_nested_attributes_for :vote_proposal_options, allow_destroy: true
 
   after_initialize :defaults_for_new
-  after_save :check_publication_status
+  after_save Proc.new { |vp| vp.publish if vp.publish? }
 
   scope :published, -> {
     where("published_at < ?", Time.now)
@@ -75,21 +75,28 @@ class VoteProposal < ApplicationRecord
   #     join_table.vote_proposal_option_id == option.id
   #   }.first
   # end
-  
-  def defaults_for_new
-    max_options = 1 if max_options.blank?
-    min_options = 1 if min_options.blank?
-  end
 
+  def publish
+    update_column(:published_at, Time.now)
+  end
+  
   def published?
     !!(published_at and published_at < Time.now + 3.seconds)
   end
 
   # VoteProposal is published after it has two accept votes.
-  def check_publication_status
-    if votes.where(status: "preview", selected_options: "Accept").size > 1
-      update_column(:published_at, Time.now)
-    end
+  #
+  # NOTE: Publishing should happen after certail percent of member have
+  # voted accept. 
+  def publish?
+    votes.where(status: "preview", selected_options: "Accept").size > 1
+  end
+
+  private
+  
+  def defaults_for_new
+    max_options = 1 if max_options.blank?
+    min_options = 1 if min_options.blank?
   end
   
 end

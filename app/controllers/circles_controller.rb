@@ -17,6 +17,11 @@ class CirclesController < ApplicationController
 
   def create
     circle_params = params.require(:circle).permit(:name, :group_id)
+
+    # NOTE: Circles are published currently immediately. In future work
+    # user needs to be authorized to be able to publish a new circle.
+    circle_params[:published_at] = Time.now
+    
     circle = Circle.new(circle_params)
 
     if circle.valid?

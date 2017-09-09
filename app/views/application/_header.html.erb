@@ -1,7 +1,21 @@
+<%
+   css_class = []
+
+   # Should we show menu if user has come first time? Maybe with instruction link?
+   css_class << "hide"
+
+   controller_name = "VoteProposalsController"
+   action = "index"
+                
+   if controller.class.name == controller_name and controller.action_name == action
+   else
+     css_class << "preview"
+   end
+   %>
 <p style="position:absolute;right:0;width:50px;z-index:20002">
   <%= query_diet_widget if Rails.env.development? %>
 </p>
-<header id="header" class="hide">
+<header id="header" class="<%= css_class.join(" ") %>">
   <div class="inner">
     <div class="content">
       <h1><%= t("direct_democracy") %></h1>

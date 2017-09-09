@@ -9,7 +9,7 @@ FactoryGirl.define do
     
     trait :with_options do
       transient do
-        options_count 2
+        options_count 3
       end
       after(:create) do |vote_proposal, evaluator|
         create_list(:vote_proposal_option, evaluator.options_count, vote_proposals: [vote_proposal])

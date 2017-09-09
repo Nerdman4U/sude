@@ -19,6 +19,11 @@ We need your help. Please, see the list below and feel free to get excited
 
 I will write here stuff i know needs to be written better.
 
+### Requests
+
+    Index and Show post/put requests are full requests. Should be ajax
+    and json. Needs some frontend library plans perhaps.
+
 ### Permissions
 
     Most permission checks are missing.

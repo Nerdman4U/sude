@@ -3,7 +3,30 @@
     <h1><%= t("Settings") %></h1>
 
     <article>
-      <h2>Tähän siis käyttäjän asetukset</h2>
+        <header>
+          <h2><%= t("Mandates") %></h2>
+          <%= will_paginate @users %>
+          <table class="">
+            <tr><th>Username</th><th></th></tr>
+            <% @users.each do |u|
+               %>
+            <tr>
+              <td><%= u.username %></td>
+              <td>
+                <% if @given_mandates.include?(u)
+                   topic = "Remove mandate"
+                   url = remove_mandate_path(u)
+                   else
+                   topic = "Give mandate"
+                   url = give_mandate_path(u)
+                   end %>
+                <%= link_to topic, url, class: "button big red", method: "patch" %>
+              </td>
+            </tr>
+            <% end %>
+          </table>
+          <%= will_paginate @users %>
+        </header>
     </article>
   </div>
 </div>

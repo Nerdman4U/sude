@@ -7,7 +7,7 @@ class VoteProposalsController < ApplicationController
     if proposal.valid?
       proposal.save
       flash[:notice] = t("Vote proposal has been added")
-      redirect_to vote_proposal_path(proposal)
+      redirect_to preview_vote_proposal_path(proposal)
     else
       redirect_to circles_path
     end
@@ -72,7 +72,7 @@ class VoteProposalsController < ApplicationController
     end
 
     @current = VoteProposal.friendly.find(record_id)
-    @vote = current_or_guest_user.votes.where(vote_proposal_id: @current.id).first
+    @vote = current_or_guest_user.vote_in_proposal(@current)
     
     session_handler.set([:proposals, :current], @current.id)    
     @next = next_proposal_from_session

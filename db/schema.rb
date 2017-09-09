@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170903055742) do
+ActiveRecord::Schema.define(version: 20170908053521) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -91,10 +91,24 @@ ActiveRecord::Schema.define(version: 20170903055742) do
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
+  create_table "mandate_users", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "mandate_from_id"
+    t.integer "circle_id"
+    t.integer "order_number"
+  end
+
+  create_table "mandate_votes", force: :cascade do |t|
+    t.integer "vote_id"
+    t.integer "mandate_from_id"
+  end
+
   create_table "user_histories", force: :cascade do |t|
     t.integer "vote_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "selected_options"
+    t.integer "selected_action"
   end
 
   create_table "user_user_histories", force: :cascade do |t|
@@ -126,7 +140,6 @@ ActiveRecord::Schema.define(version: 20170903055742) do
     t.string "username"
     t.string "fullname"
     t.integer "confirmed"
-    t.integer "foo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -170,8 +183,6 @@ ActiveRecord::Schema.define(version: 20170903055742) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description"
-    t.integer "anonymous_vote_count"
-    t.integer "confirmed_vote_count"
     t.string "slug"
     t.integer "circle_id"
   end
@@ -190,6 +201,7 @@ ActiveRecord::Schema.define(version: 20170903055742) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status"
+    t.integer "voted_by_id"
     t.index ["user_id"], name: "index_votes_on_user_id"
     t.index ["vote_proposal_id"], name: "index_votes_on_vote_proposal_id"
   end

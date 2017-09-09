@@ -26,7 +26,7 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
                                       topic:"foobar1", description:"asdf", circle_id:circle.id
                                     })
     end
-    assert_redirected_to vote_proposal_path(VoteProposal.last)
+    assert_redirected_to preview_vote_proposal_path(VoteProposal.last)
 
     opt1 = create(:vote_proposal_option)
     opt2 = create(:vote_proposal_option)
@@ -37,7 +37,7 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
                                       vote_proposal_option_ids: [opt1.id, opt2.id]
                                     })
     end
-    assert_redirected_to vote_proposal_path(VoteProposal.last)
+    assert_redirected_to preview_vote_proposal_path(VoteProposal.last)
     assert_equal VoteProposal.last.vote_proposal_options.size, 2
   end
 

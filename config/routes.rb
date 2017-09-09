@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     post "/vote_proposals/", to:"vote_proposals#create", as:"create_vote_proposal"
     get '/user/settings', to: "users#settings", as: "settings"
     get '/user/history', to: "users#history", as: "history"
+    patch '/user/give_mandate/:mandate_to_id', to: "users#give_mandate", as: "give_mandate"
+    patch '/user/remove_mandate/:mandate_from_id', to: "users#remove_mandate", as: "remove_mandate"
     get '/instruction', to: "democracy#instruction", as: "instruction"
     get '/confirm', to: "democracy#confirm", as: "confirm"
     devise_for :users

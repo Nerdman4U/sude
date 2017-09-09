@@ -10,6 +10,20 @@ class VoteTest < ActiveSupport::TestCase
     DatabaseCleaner.clean
   end
 
+  test 'should return users who have given mandate for the votes' do
+    vote = create(:vote)
+    assert vote.mandates_from.blank?
+    assert vote.mandate_votes.blank?
+
+    user = create(:user)
+    vote.mandates_from << user
+    assert_equal vote.mandates_from.size, 1
+    assert_equal user.mandate_votes.size, 1
+    assert_equal user.votes_from_mandate.size, 1
+    assert_equal user.votes_from_mandate.first, vote
+    assert_equal vote.mandates_from.first, user
+  end
+
   test 'should modify counter cache record when vote is saved and options have been changed' do
     vote = create(:vote)
     proposal = vote.vote_proposal
@@ -43,28 +57,25 @@ class VoteTest < ActiveSupport::TestCase
     assert_equal rec.anonymous_vote_count, 0
   end
   
-  test 'should create user history when vote is created' do
+  test 'should create user history when vote is saved' do
     user = create(:user)
     proposal = create(:vote_proposal, :with_options)
     vote = create(:vote, user: user, vote_proposal: proposal, vote_proposal_options: [proposal.vote_proposal_options.first])
     assert_equal vote.user_histories.count, 1
-  end
+    assert_equal vote.selected_options, vote.user_histories.first.selected_options
+    assert_equal vote.user_histories.last.selected_action, "add"
 
-  test 'should not allow multiple votes for same user on proposal' do
-    vote = create(:vote)
-    proposal = vote.vote_proposal
-    user = vote.user
-
-    assert vote.valid?
-    assert_no_difference 'Vote.count' do
-      opt = proposal.vote_proposal_options.first
-      params = {
-        vote_proposal: proposal,
-        user: user,
-        vote_proposal_options: [opt]
-      }
-      vote = Vote.create(params)
-    end
+    proposal.update_attribute(:max_options, 2)
+    vote.vote_proposal_options << vote.vote_proposal.vote_proposal_options.second
+    assert_equal vote.user_histories.count, 2
+    assert_equal vote.selected_options, vote.vote_proposal_options.map(&:name).sort.join("|")
+    assert_equal vote.user_histories.last.selected_action, "add"
+    
+    vote.vote_proposal_options.delete vote.vote_proposal.vote_proposal_options.second
+    assert_equal vote.user_histories.count, 3
+    assert_equal vote.user_histories.last.selected_options, vote.vote_proposal.vote_proposal_options.second.name
+    assert_equal vote.selected_options, vote.vote_proposal_options.first.name
+    assert_equal vote.user_histories.last.selected_action, "remove"
   end
 
   test 'should modify parametes' do
@@ -73,7 +84,7 @@ class VoteTest < ActiveSupport::TestCase
     opt2 = create(:vote_proposal_option)
     proposal.vote_proposal_options << [opt1, opt2]
     user = create(:user)
-    vote = user.vote(proposal, [opt1,opt2])
+    vote = user.vote(proposal, [opt1,opt2]).first
     assert_equal vote.vote_proposal_options.count, 2
     
     params = {
@@ -92,7 +103,7 @@ class VoteTest < ActiveSupport::TestCase
     opt3 = create(:vote_proposal_option)
     proposal.vote_proposal_options << [opt1, opt2, opt3]
     user = create(:user)
-    vote = user.vote(proposal, opt1)
+    vote = user.vote(proposal, opt1).first
     assert_equal vote.vote_proposal_options.count, 1
     
     vote.vote_proposal.update_attributes({max_options: 2})
@@ -105,12 +116,13 @@ class VoteTest < ActiveSupport::TestCase
 
   test 'should add multiple options to a vote' do
     proposal = create(:vote_proposal)
+    proposal.update_attribute(:max_options, 2)
     opt1 = create(:vote_proposal_option)
     opt2 = create(:vote_proposal_option)
     opt3 = create(:vote_proposal_option)
     proposal.vote_proposal_options << [opt1, opt2, opt3]
     user = create(:user)
-    vote = user.vote(proposal, opt1)
+    vote = user.vote(proposal, opt1).first
     
     params = {
       vote_proposal_option_ids: [opt1.id, opt2.id]
@@ -126,7 +138,7 @@ class VoteTest < ActiveSupport::TestCase
     user = create(:user)
     vote_proposal = create(:vote_proposal_with_options)
     opt = vote_proposal.vote_proposal_options.first    
-    vote = user.vote(vote_proposal, opt)
+    vote = user.vote(vote_proposal, opt).first
     
     params = {
       vote_proposal_options_attributes: { id: opt.id, _destroy: true }
@@ -143,12 +155,17 @@ class VoteTest < ActiveSupport::TestCase
     options = [proposal.vote_proposal_options.first.id]
     params = {
       vote_proposal_id: proposal.id,
-      vote_proposal_option_ids: options,
-      user_id: user.id
+      user_id: user.id,
+      voted_by_id: user.id
     }
+    
+    vote = nil
     assert_difference "Vote.count" do
-      Vote.create(params)
+      vote = Vote.create(params)
+      vote.update_attributes(vote_proposal_option_ids: options)
     end
+    assert_equal vote.vote_proposal_options.size, 1
+    assert_equal vote.vote_proposal_options.first, proposal.vote_proposal_options.first    
   end
   
   test 'should create persisted vote' do

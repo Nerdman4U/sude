@@ -5,16 +5,32 @@
       <article>
         <header>
           <h2><%= t("Activity") %></h2>
-          <table>
-            <tr><th>Proposal</th><th>Voted</th><th>Date</th></tr>
-            <% current_or_guest_user.user_histories.each do |history| %>
+          <%= will_paginate @history %>
+          <table class="user_history">
+            <tr><th>Proposal</th><th>Voted</th><th>Date</th><th>By who</th></tr>
+            <% @history.each do |history|
+               css_class = history.selected_action
+               %>
             <tr>
-              <td><%= history.vote.vote_proposal.topic %></td>
-              <td><%= history.vote.vote_proposal_options.map(&:name).join(", ") %></td>
+              <td><%= history.vote.vote_proposal.topic %>
+              <%# history.id %></td>
+              <td class="<%= css_class %>">
+                <% if history.selected_action == "add" %>+
+                <% else %>-
+                <% end %>
+                
+                <%= history.selected_options %>
+              </td>
               <td><%= history.created_at.localtime %></td>
+              <td>
+                <% history.users.each do |user| %>
+                  <%= "#{user.username} (#{user.email}" %><br/>
+                <% end %>
+              </td>
             </tr>
             <% end %>
           </table>
+          <%= will_paginate @history %>
         </header>
       </article>
     </div>

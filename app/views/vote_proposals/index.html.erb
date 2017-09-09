@@ -49,7 +49,7 @@
                     par = { vote: { vote_proposal_option_ids: [option.id] } }
                   end
                  %>
-                 <td><%= link_to option.name, update_vote_path(vote, par), remote: true, method: :put, class: "#{css_class}" %></td>
+                 <td><%= link_to option.name, update_vote_path(vote, par), remote: false, method: :put, class: "#{css_class}" %></td>
                 <% else
                   par = {
                      vote: {
@@ -57,7 +57,7 @@
                        vote_proposal_option_ids: [option.id]
                      }
                   } %>
-                  <td><%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}" %></td>
+                  <td><%= link_to option.name, create_vote_path(par), remote: false, method: :post, class: "#{css_class}" %></td>
                   
               <% end %>
                 <td><%= record.anonymous_vote_count || 0%></td>

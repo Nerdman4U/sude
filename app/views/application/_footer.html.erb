@@ -3,11 +3,22 @@
   <div class="inner">
     <div class="content">
       <h3>Suorademokratia.net palvelua ylläpitää Suomen Demokratia ry.</h3>
-      <%= show_header_buttons %>
       <%= link_to t("Home"), root_path %>
       <%= link_to t("History"), history_path %>
-      <%= link_to t("Settings"), settings_path %>
+      <%= link_to t("Instruction"), instruction_path %>
       <%= link_to t("Talking Circles"), circles_path %>
+
+      <% if user_signed_in? %>
+        <%= link_to(t("Sign out"), destroy_user_session_path, method: :delete, class: "", "data-turbolinks": false, title: "Kirjaudu ulos") %>
+        <%= link_to t("Settings"), settings_path %>
+        <% if !current_user.confirmed? %>
+          <%= link_to(t("Verify account"), confirm_path, class: "", title: "Vahvista tunnus") %>
+        <% end %>
+        
+      <% else %>
+        <%= link_to(t("Sign in"), new_user_session_path(locale: locale), class: "", "data-turbolinks": false, title: "Kirjaudu sisään") %>
+        
+      <% end %>
     </div>
     <div class="copyright">
       <h3>Follow us</h3>
