@@ -85,7 +85,8 @@ votable.
 
 ### Prerequisites
 
-Ruby 2.3.1
+Ruby 2.4
+Yarn install: https://yarnpkg.com/en/docs/install
 
 ## Running the tests
 
