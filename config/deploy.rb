@@ -2,7 +2,7 @@
 lock "3.9.0"
 
 set :application, 'DirectDemocracy'
-set :repo_url, "git@github.com/Nerdman4U/sude.git"
+set :repo_url, "git@github.com-nerdman4u:Nerdman4U/sude.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -27,7 +27,7 @@ set :deploy_to, "/var/www/suorademokratia.net"
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
 
 # Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+# set :default_env, { path: "/home/jto/.rvm/gems/ruby-2.4.0/bin:$PATH" }
 
 # Default value for local_user is ENV['USER']
 # set :local_user, -> { `git config user.name`.chomp }
