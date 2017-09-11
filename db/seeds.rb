@@ -18,13 +18,13 @@ if Rails.env.development? or Rails.env.staging?
   admin = find_or_create("AdminUser", {email: 'admin@suorademokratia.net'})
   admin.update_attribute(:password, "password")
   user1 = find_or_create("User", {email: 'mikko.vapa@suorademokratia.net'}) { |u| u.fullname = "Mikko Vapa"; u.username = "mikkovapa"}
-  user.update_attribute(:password, "password")
+  user1.update_attribute(:password, "password")
   user2 = find_or_create("User", {email: 'marko.vapa@suorademokratia.net'}) { |u| u.fullname = "Marko Vapa"; u.username = "markovapa"}
-  user.update_attribute(:password, "password")
+  user2.update_attribute(:password, "password")
   user3 = find_or_create("User", {email: 'niko.kauko@suorademokratia.net'}) { |u| u.fullname = "Niko Kauko"; u.username = "nikokauko"}
-  user.update_attribute(:password, "password")
+  user3.update_attribute(:password, "password")
   user4 = find_or_create("User", {email: 'joni.toyryla@suorademokratia.net'}) { |u| u.fullname = "Joni Töyrylä"; u.username = "jonitoyryla"}
-  user.update_attribute(:password, "password")
+  user4.update_attribute(:password, "password")
 
   # Options
   yes = find_or_create("VoteProposalOption", {name: "Yes"})
