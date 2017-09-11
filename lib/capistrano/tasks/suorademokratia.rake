@@ -1,7 +1,7 @@
 namespace :deploy do
   task :seed do
     on roles(:all) do
-      within "#{current_path}" do
+      within "#{release_path}" do
         with rails_env: "#{fetch(:stage)}" do
           execute :rake, "db:seed"
         end
