@@ -37,10 +37,10 @@ if Rails.env.development? or Rails.env.staging? or Rails.env.production?
 
   # Groups
   group1 = find_or_create("Group", {name: "Suomen Demokratia ry."}) { |g|
-    g.users << user1 unless g.users.include(user1)
-    g.users << user2 unless g.users.include(user2)
-    g.users << user3 unless g.users.include(user3)
-    g.users << user4 unless g.users.include(user4)
+    g.users << user1 unless g.users.include?(user1)
+    g.users << user2 unless g.users.include?(user2)
+    g.users << user3 unless g.users.include?(user3)
+    g.users << user4 unless g.users.include?(user4)
   }
   
   # Proposals
@@ -49,7 +49,7 @@ if Rails.env.development? or Rails.env.staging? or Rails.env.production?
     p.circle = circle3;    
     p.vote_proposal_options << yes unless p.vote_proposal_options.include?(yes)
     p.vote_proposal_options << no unless p.vote_proposal_options.include?(no)
-    p.groups << group1 unless p.groups.include(gruop1)
+    p.groups << group1 unless p.groups.include?(group1)
   }
   
 end
