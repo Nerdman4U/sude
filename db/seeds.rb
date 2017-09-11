@@ -11,7 +11,7 @@ def find_or_create(model, attributes, &block)
   model.constantize.find_or_create_by(attributes, &block)
 end
 
-if Rails.env.development? or Rails.env.staging? or Rails.env.production?
+if Rails.env.development? or Rails.env.staging?
   # Users  
   user = find_or_create("User", {email: 'admin@suorademokratia.net'}) { |u| u.fullname = "Admin" }
   user.update_attribute(:password, "password")
@@ -44,11 +44,17 @@ if Rails.env.development? or Rails.env.staging? or Rails.env.production?
   }
   
   # Proposals
-  proposal1 = find_or_create("VoteProposal", {topic: "Pitäisikö Suomen liittyä Natoon?"}) { |p| p.circle = circle1; p.vote_proposal_options << [yes, no] }
+  proposal1 = find_or_create("VoteProposal", {topic: "Pitäisikö Suomen liittyä Natoon?"}) { |p|
+    p.circle = circle1;
+    p.vote_proposal_options << yes unless p.vote_proposal_options.include?(yes)
+    p.vote_proposal_options << no unless p.vote_proposal_options.include?(no)
+    p.published_at = Time.now
+  }
   proposal1 = find_or_create("VoteProposal", {topic: "Julkaistaanko suorademokratia.net tämän vuoden puolella?"}) { |p|
     p.circle = circle3;    
     p.vote_proposal_options << yes unless p.vote_proposal_options.include?(yes)
     p.vote_proposal_options << no unless p.vote_proposal_options.include?(no)
+    p.published_at = Time.now
     p.groups << group1 unless p.groups.include?(group1)
   }
   
