@@ -1,7 +1,7 @@
 FactoryGirl.define do  
   factory :user do
-    fullname { [Faker::Name.first_name, Faker::Name.unique.last_name].join(" ") }
     email { Faker::Internet.safe_email(fullname) }
+    fullname { [Faker::Name.first_name, Faker::Name.unique.last_name].join(" ") }
     username { Faker::Internet.user_name(fullname) }
     password { "password" }
 

@@ -37,3 +37,4 @@ def count_queries &block
   count
 end
 
+DatabaseCleaner.strategy = :truncation

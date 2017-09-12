@@ -29,10 +29,14 @@
 
       <% @vote_proposals.each do |vp| %>
         <div class="image fit">        
-          <article style="border:1px dotted #ddd; padding: 8px;">
+          <article class="proposal">
             <header><%= link_to vp.topic, vote_proposal_path(vp) %></header>
             <table>
-              <tr><td>Nimi</td><td>Anonyymi</td><td>Vahvistettu</td></tr>
+              <tr>
+                <td><%= t("Name") %></td>
+                <td></td>
+                <td></td>
+              </tr>
               <tr>
               <% vp.vote_proposal_options.each do |option|
                 record = vp.find_counter_cache_record(option)
@@ -60,8 +64,8 @@
                   <td><%= link_to option.name, create_vote_path(par), remote: false, method: :post, class: "#{css_class}" %></td>
                   
               <% end %>
-                <td><%= record.anonymous_vote_count || 0%></td>
-                <td><%= record.confirmed_vote_count || 0%></td>
+                <td class="anonymous_count"><%= record.anonymous_vote_count || 0%></td>
+                <td class="confirmed_count"><%= record.confirmed_vote_count || 0%></td>
               </tr>
               <% end %>
             </table>

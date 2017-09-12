@@ -86,7 +86,12 @@ votable.
 ### Prerequisites
 
 Ruby 2.4
-Yarn install: https://yarnpkg.com/en/docs/install
+
+Yarn:
+install: https://yarnpkg.com/en/docs/install
+
+Chromedriver for mobile tests:
+https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver
 
 ## Running the tests
 

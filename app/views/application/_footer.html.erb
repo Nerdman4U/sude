@@ -17,7 +17,7 @@
         
       <% else %>
         <%= link_to(t("Sign in"), new_user_session_path(locale: locale), class: "", "data-turbolinks": false, title: "Kirjaudu sisään") %>
-        
+        <%= link_to t("Sign up"), new_user_registration_path %>
       <% end %>
     </div>
     <div class="copyright">

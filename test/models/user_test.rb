@@ -9,6 +9,12 @@ class UserTest < ActiveSupport::TestCase
     proposal.send(:find_counter_cache_record, opt).anonymous_vote_count || 0
   end
 
+  test 'should have default values' do
+    user1 = User.create(email: "foo@bar.com", password: "foobar")
+    assert_equal user1.username, "foo"
+    assert_equal user1.fullname, "foo"
+  end
+
   test 'should add correct user to history after voting with mandate' do
     user1 = create(:user)
     proposal = create(:vote_proposal, :with_options)
