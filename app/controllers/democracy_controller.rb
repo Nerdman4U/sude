@@ -33,7 +33,7 @@ class DemocracyController < ApplicationController
   def checkout_success
     status = params["STATUS"]
     if status == "2"
-      current_user.confirmed = true
+      current_user.confirm
       current_user.save
       flash[:notice] =
         "Tervetuloa Suomen Demokratia ry:n jäseneksi! Käyttäjätilisi on vahvistettu."

@@ -4,7 +4,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable  
-  has_many :votes, :inverse_of => :user
+  has_many :votes, -> { includes [:vote_proposal, :vote_proposal_options] }, :inverse_of => :user
   has_many :user_vote_proposals
   has_many :vote_proposals, through: :user_vote_proposals
   has_many :group_permissions
@@ -18,7 +18,7 @@ class User < ApplicationRecord
   
   has_many :mandate_votes, foreign_key: :mandate_from
   has_many :votes_from_mandate, through: :mandate_votes, source: :vote
-  
+
   enum status: [:active, :disabled, :removed]
 
   # todo: maybe we could have a scope to retrieve all groups with permissions where user belongs
@@ -52,9 +52,28 @@ class User < ApplicationRecord
   end
   
   def vote_in_proposal proposal
-    votes.includes(:vote_proposal).select {|vote|
+    votes.select {|vote|
       vote.vote_proposal == proposal and vote.status == nil
     }.first
+  end
+
+  def confirm
+    # For each vote we must find join table and change the vote value
+    # from anonymous to confirmed
+    votes.each do |vote|
+      proposal = vote.vote_proposal
+      vote.vote_proposal_options.each do |opt|
+        join_table = proposal.find_counter_cache_record(opt)
+        a_count = join_table.anonymous_vote_count || 0
+        c_count = join_table.confirmed_vote_count || 0
+        join_table.update_attributes({
+                                       anonymous_vote_count: a_count - 1,
+                                       confirmed_vote_count: c_count + 1
+                                     })
+          
+      end
+    end
+    self.confirmed = true
   end
 
   # Status is used when voting should a vote proposal be

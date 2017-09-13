@@ -1,12 +1,56 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  def teardown
-    DatabaseCleaner.clean
+  def setup
+    # After changing mySQL from SQLLite DatabaseCleaner wont work, table
+    # truncate raises. Using only transaction does not work either too
+    # good. Deleting users seems to work good enough. Need to find a
+    # solution. 
+    # DatabaseCleaner.strategy = :transaction
+    # DatabaseCleaner.clean
+    User.delete_all
   end
 
-  def rec_count proposal, opt
-    proposal.send(:find_counter_cache_record, opt).anonymous_vote_count || 0
+  # Find join table record
+  def rec proposal, opt
+    proposal.send(:find_counter_cache_record, opt)
+  end
+  
+  def rec_count proposal, opt, rec_type="a"
+    rec_type = rec_type == "a" ? "anonymous" : "confirmed"
+    rec(proposal, opt).send("#{rec_type}_vote_count") || 0
+  end
+
+  test 'should change vote counts after confirmation' do    
+    user1 = create(:user)
+    proposal = create(:vote_proposal, :with_options)
+    opt1 = proposal.vote_proposal_options.first
+    user1.vote(proposal, opt1)
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    query_count = count_queries do
+      user1.confirm
+    end
+    assert_equal query_count, 5
+    assert_equal rec_count(proposal, opt1), 0
+    assert_equal rec_count(proposal, opt1, "c"), 1    
+  end
+
+  test 'should have correct vote counts before and after confirmation' do
+    user1 = create(:user)
+    proposal = create(:vote_proposal, :with_options)
+    opt1 = proposal.vote_proposal_options.first
+
+    # Vote unconfirmed
+    user1.vote(proposal, opt1)
+    assert_equal rec_count(proposal, opt1), 1
+    assert_equal rec_count(proposal, opt1, "c"), 0
+
+    user1.confirm
+
+    # Vote confirmed
+    user1.vote(proposal, opt1, action: :delete)
+    assert_equal rec_count(proposal, opt1), 0
+    assert_equal rec_count(proposal, opt1, "c"), 0
   end
 
   test 'should have default values' do
