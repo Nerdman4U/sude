@@ -43,9 +43,21 @@ class VotesController < ApplicationController
     # to be public.
     proposal.publish
 
-    redirect_back(fallback_location: vote_proposal_path(proposal))
+
+    respond_to do |format|
+      format.html {
+        redirect_back(fallback_location: vote_proposal_path(proposal))
+      }
+      format.json {
+        render json: proposal.find_counter_cache_record(option)
+        return
+      }
+    end
   end
 
+  # Update a vote.
+  #
+  # Parameters always contain only one vote option.
   def update
     vote_id = params.require(:id)
     vote_params = params.require(:vote).
@@ -61,9 +73,10 @@ class VotesController < ApplicationController
       id = vote_params[:vote_proposal_option_ids][0]
     end
 
-    vote = current_or_guest_user.votes.includes(:vote_proposal).find(vote_id)
+    # Detect does not hit database.
+    vote = current_or_guest_user.votes.detect {|vote| vote.id == vote_id.to_i }
     proposal = vote.vote_proposal
-    option = proposal.vote_proposal_options.find(id)
+    option = proposal.vote_proposal_options.detect {|opt| opt.id ==  id.to_i }
     current_or_guest_user.vote proposal, option, action: action
 
     # vote.modify_params! vote_params
@@ -75,9 +88,17 @@ class VotesController < ApplicationController
     # # vote_proposal_options are removed.
     # vote.save
 
-    vote.vote_proposal.publish
-    
-    redirect_back(fallback_location: vote_proposal_path(vote.vote_proposal))
+    proposal.publish
+
+    respond_to do |format|
+      format.html {
+        redirect_back(fallback_location: vote_proposal_path(proposal))
+      }
+      format.json {
+        data = proposal.find_counter_cache_record(option)
+        render json: data
+      }
+    end
   end
 
   # # DEPRECATED

@@ -12,7 +12,7 @@
 //
 //= require rails-ujs
 // require turbolinks
-//= require jquery.min
+//= require jquery-3.2.1
 //= require skel.min
 //= require util
 //= require main

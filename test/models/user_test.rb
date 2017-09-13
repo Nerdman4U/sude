@@ -21,12 +21,33 @@ class UserTest < ActiveSupport::TestCase
     rec(proposal, opt).send("#{rec_type}_vote_count") || 0
   end
 
+  test 'should have only few request when loading associated objects' do
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    user1 = create(:user)
+    proposal = create(:vote_proposal, :with_options)
+    opt1 = proposal.vote_proposal_options.first
+    user1.vote(proposal, opt1)
+
+    votes = []
+    query_count = count_queries do
+      votes = user1.votes
+    end
+    assert_equal query_count, 0
+
+    proposal = votes.first.vote_proposal
+    query_count = count_queries do
+      proposal.vote_proposal_options.detect {|opt| opt.id == opt1.id }
+    end
+    assert_equal query_count, 0
+    
+  end
+
   test 'should change vote counts after confirmation' do    
     user1 = create(:user)
     proposal = create(:vote_proposal, :with_options)
     opt1 = proposal.vote_proposal_options.first
     user1.vote(proposal, opt1)
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    
     query_count = count_queries do
       user1.confirm
     end

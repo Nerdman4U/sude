@@ -193,6 +193,8 @@ class User < ApplicationRecord
     voting_users = [self]
     voting_users += mandates_from.to_a
     voting_users.map do |user|
+      byebug
+
       vote = user.vote_in_proposal(proposal)        
       if not vote
         user.create_vote proposal, values, status, self
