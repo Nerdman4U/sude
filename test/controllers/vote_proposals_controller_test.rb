@@ -7,6 +7,19 @@ class VoteProposalsControllerTest < ActionDispatch::IntegrationTest
     DatabaseCleaner.clean
   end
 
+  def json_response
+    ActiveSupport::JSON.decode @response.body
+  end
+
+  test 'should get json response with all circles and proposals without groups' do
+    user = create(:user)
+    proposal = create(:vote_proposal, :with_options)
+    get vote_proposals_path format: :json
+
+    assert json_response
+    puts json_response.inspect
+  end
+
   # Preview is used for to be able to vote for to publish unpublished
   # vote_proposals.
   test 'should get preview' do

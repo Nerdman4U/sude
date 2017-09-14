@@ -4,17 +4,26 @@
 
 $ ->
   $("a[data-remote]").on "ajax:success", (e, data, status, xhr) ->
+    if e.originalEvent.detail[0]["invalid"]
+      return
+    
     if $(e.target).hasClass("voted")
       $(e.target).removeClass("voted")
     else
       $(e.target).addClass("voted")
 
     $(e.target).data({'method': 'put'})
-    $(e.target).url = e.originalEvent.detail[0]["url"]
 
     # Data is found from e.originalEvent.detail... "data" in parameter is empty?
     a_count = e.originalEvent.detail[0]["anonymous_vote_count"] || 0
     c_count = e.originalEvent.detail[0]["confirmed_vote_count"] || 0
-    $(e.target).parent().siblings(".anonymous_count").html(a_count)
-    $(e.target).parent().siblings(".confirmed_count").html(c_count)
-    
+
+    if $(e.target).parent().siblings(".anonymous_count").length > 0
+      a_node = $(e.target).parent().siblings(".anonymous_count")
+      c_node = $(e.target).parent().siblings(".confirmed_count")
+    else
+      a_node = $(e.target).parent().find(".anonymous_count")      
+      c_node = $(e.target).parent().find(".confirmed_count")      
+          
+    a_node.html(a_count)
+    c_node.html(c_count)

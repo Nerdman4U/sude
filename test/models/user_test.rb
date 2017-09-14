@@ -149,17 +149,11 @@ class UserTest < ActiveSupport::TestCase
     assert_equal rec_count(proposal,opt3), 1
 
     # Remove vote options
-    user2.vote proposal, [opt2], {action: :remove}
+    user2.vote proposal, [opt2]
     assert_equal rec_count(proposal,opt1), 0
     assert_equal rec_count(proposal,opt2), 0
     assert_equal rec_count(proposal,opt3), 1
-    user1.vote proposal, [opt3], {action: :remove}
-    assert_equal rec_count(proposal,opt1), 0
-    assert_equal rec_count(proposal,opt2), 0
-    assert_equal rec_count(proposal,opt3), 0
-
-    # Remove invalid option
-    user1.vote proposal, [opt1], {action: :remove}
+    user1.vote proposal, [opt3]
     assert_equal rec_count(proposal,opt1), 0
     assert_equal rec_count(proposal,opt2), 0
     assert_equal rec_count(proposal,opt3), 0
@@ -341,11 +335,18 @@ class UserTest < ActiveSupport::TestCase
   
   test 'should allow user to vote a vote proposal' do
     user = create(:user)
+    proposal = create(:vote_proposal_with_options)
+    opt1 = proposal.vote_proposal_options.first
     assert_difference 'Vote.count' do
-      proposal = create(:vote_proposal_with_options)
-      option = proposal.vote_proposal_options.first
-      user.vote(proposal, option)
+      user.vote(proposal, opt1)
     end
+    assert_equal rec_count(proposal,opt1), 1
+
+    assert_no_difference 'Vote.count' do
+      user.vote(proposal, opt1)
+    end
+    assert_equal rec_count(proposal,opt1), 0
+    
   end
   
   test 'should create a User' do

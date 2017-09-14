@@ -193,8 +193,6 @@ class User < ApplicationRecord
     voting_users = [self]
     voting_users += mandates_from.to_a
     voting_users.map do |user|
-      byebug
-
       vote = user.vote_in_proposal(proposal)        
       if not vote
         user.create_vote proposal, values, status, self
@@ -203,10 +201,12 @@ class User < ApplicationRecord
           # if we are voting for mandate giver but user has already
           # voted by itself do nothing 
         else
-          if action == :add
-            add_vote_option vote, values, self
+          # Currently only one option is give at a time.
+          option = values.first
+          if vote.vote_proposal_options.detect {|opt| opt.id == option.id }
+            remove_vote_option vote, [option], self
           else
-            remove_vote_option vote, values, self
+            add_vote_option vote, [option], self
           end
         end
       end
@@ -224,7 +224,9 @@ class User < ApplicationRecord
   def add_vote_option vote, values, voted_by
     opt_ids = vote.vote_proposal_options.map(&:id) + values.map(&:id)
     max = vote.vote_proposal.max_options || 1
-    return if opt_ids.count > max
+    if opt_ids.count > max
+      raise ArgumentError, "Invalid"
+    end
 
     vote.voted_by = voted_by
     vote.vote_proposal_options << values

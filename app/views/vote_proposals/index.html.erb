@@ -46,12 +46,8 @@
                   ind = vote.vote_proposal_options.index(option)
                   if ind && (ind >= 0)
                     css_class += " voted"
-                    par = {
-                      vote: { vote_proposal_options_attributes: [{id: option.id, _destroy: true}] }
-                    }
-                  else
-                    par = { vote: { vote_proposal_option_ids: [option.id] } }
                   end
+                  par = { vote: { vote_proposal_option_ids: [option.id] } }
                  %>
                  <td><%= link_to option.name, update_vote_path(vote, par), remote: true, method: :put, class: "#{css_class}", "data-type" => "json" %></td>
                 <% else

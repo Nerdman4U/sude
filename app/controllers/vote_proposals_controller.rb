@@ -19,6 +19,8 @@ class VoteProposalsController < ApplicationController
   end
 
   # TODO: CHECK PERMISSIONS
+  # TODO: CACHE
+  # - JSON api is very heavy and needs to be cached
   def index
     group_id = params[:group_id]
 
@@ -39,7 +41,14 @@ class VoteProposalsController < ApplicationController
       @votes[vp.id] = vote if vote
     end
 
-    session_handler.set(:proposals, @vote_proposals.map(&:id))
+    respond_to do |format|
+      format.html {
+        session_handler.set(:proposals, @vote_proposals.map(&:id))
+      }
+      format.json {
+        render json: @vote_proposals, include: [:vote_proposal_options, :circle, :vote_proposal_vote_proposal_options]
+      }
+    end
   end
 
   def preview

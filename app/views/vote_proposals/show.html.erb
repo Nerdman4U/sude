@@ -18,14 +18,10 @@
              ind = @vote.vote_proposal_options.index(option)
              if ind && (ind >= 0)
                css_class += " voted"
-               par = {
-                 vote: { vote_proposal_options_attributes: [{id: option.id, _destroy: true}] }
-               }
-             else
-               par = { vote: { vote_proposal_option_ids: [option.id] } }
              end 
+             par = { vote: { vote_proposal_option_ids: [option.id] } }
           %>
-          <%= link_to option.name, update_vote_path(@vote, par), remote: false, method: :put, class: "#{css_class}" %>          
+          <%= link_to option.name, update_vote_path(@vote, par), remote: true, method: :put, class: "#{css_class}", "data-type" => "json" %>          
           <% else %>
             <% par = {
                vote: {
@@ -34,16 +30,17 @@
                }
              }
           %>
-          <%= link_to option.name, create_vote_path(par), remote: false, method: :post, class: "#{css_class}" %>
+          <%= link_to option.name, create_vote_path(par), remote: true, method: :post, class: "#{css_class}", "data-type" => "json" %>
           <% end %>
           <div>
             <table style="font-size:small">
               <tr>
-                <td>Anonymous</td><td><%= record.anonymous_vote_count || 0 %></td>
+                <td>Anonymous</td>
+                <td class="anonymous_count"><%= record.anonymous_vote_count || 0 %></td>
               </tr>
               <tr>
                 <td>Confirmed</td>                
-                <td><%= record.confirmed_vote_count || 0%></td>
+                <td class="confirmed_count"><%= record.confirmed_vote_count || 0%></td>
               </tr>
             </table>
           </div>
